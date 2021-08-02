@@ -1,10 +1,13 @@
 #include <iostream>
+#include "../include/Sales_item.h"
+
 int main()
 {
-int sum = 0, value = 0;
-// read until end-of-file, calculating a running total of all values read
-while (std::cin >> value)
-    sum += value; // equivalent to sum = sum + value
-    std::cout << "Sum is: " << sum << std::endl;
+    std::cout << "Please input ISBN, number of copies sold, and sales price." << std::endl;
+    Sales_item book;
+    // read ISBN, number of copies sold, and sales price
+    std::cin >> book;
+    // write ISBN, number of copies sold, total revenue, and average price
+    std::cout << book << std::endl;
     return 0;
 }

@@ -20,9 +20,9 @@
 - the contents of a data element
 - the operations that are possible on those data.
 
-> When the type of a variable named v is T, we often say that “v has type T” or, interchangeably, that “v is a T.”  
+> When the type of a variable named v is T, we often say that "v has type T" or, interchangeably, that "v is a T."  
 
-### Compiling and Executing using command line
+### 1.1.1 Compiling and Executing using command line
 
 I choose to use MSVC complier on Windows 10.
 
@@ -189,7 +189,7 @@ We often need to comment out a block of code during debugging. Because that code
 
 Statements normally execute sequentially: The first statement in a block is executed first, followed by the second, and so on.  
 
-### The *while* Statement
+### 1.4.1 The *while* Statement
 
 A **while** statement repeatedly executes a section of code so long as a given condition is true. A **while** has the form:
 
@@ -201,22 +201,22 @@ while (condition) {
 
 A condition is an expression that yields a result that is either true or false.
 
-### The *for* Statement
+### 1.4.2 The *for* Statement
 
 Each *for* statement has two parts: 
 
 - A header 循环头
   - The header controls how often the body is executed. The header itself consists of three parts:
   - An init-statement 初始化语句
-    - The init-statement is executed only once, on entry to the *for*.
+    - The init-statement is executed only **once**, on entry to the *for*.
     - Variables defined in init-statement only exist inside the *for*.
   - A condition 循环条件
     - The *for* body will be executed right after the condition successes.
   - An expression 表达式
-    - After executing the body, the expression will be the next one to execute.
+    - The expression will be the next one to execute after the body.
 - A body 循环体
 
-### Reading an Unknown Number of Inputs
+### 1.4.3 Reading an Unknown Number of Inputs
 
 When it's time that we won't know how many numbers to add, we can use an object of type istream as a condition to evaluate:
 
@@ -225,11 +225,96 @@ while (std::cin >> value)
 	sum += value; // equivalent to sum = sum + value
 ```
 
->When we use an istream as a condition, the effect is to test the state of the stream. If the stream is valid—that is, if the stream hasn’t encountered an error—then the test succeeds. An istream becomes invalid when we hit **end-of-file 文件结束符** or encounter an invalid input (e.g. value is a int, but we receive a string), such as reading a value that is not an integer. An istream that is in an invalid state will cause the condition to yield false.  On Windows systems we enter an end-of-file by typing a control-z. On UNIX systems, including on Mac OS X machines, end-of-file is usually control-d.
+>When we use an istream as a condition, the effect is to test the state of the stream. If the stream is valid—that is, if the stream hasn’t encountered an error—then the test succeeds. An istream becomes invalid when we hit **end-of-file 文件结束符** or encounter an invalid input (e.g. value is a int, but we receive a string), such as reading a value that is not an integer. An istream that is in an invalid state will cause the condition to yield false.  On Windows systems we enter an end-of-file by typing a `control-z`. On UNIX systems, including on Mac OS X machines, end-of-file is usually `control-d`.
+
+#### Common errors when compiling
+
+A compiler cannot detect whether a program does what its author intends, but it can detect errors in the *form* of the program: 
+
+1. Syntax errors 语法错误: Wrong punctuations and grammatical errors.
+2. Type errors 类型错误: The types of value and variable mismatch when assigning.
+3. Declaration errors 声明错误: Failure to declare a name when using it.
+
+### 1.4.4 The *if* Statement
+
+*if* statement is for conditional execution.
+
+```c++
+if (condition) {
+    statement 1
+} else {
+    statement 2
+}
+```
+
+If the condition is true, we execute the statement 1 that immediately follows the condition, otherwise statement 2.
+
+| operator | meaning      | opposite operator | meaning                  |
+| -------- | ------------ | ----------------- | ------------------------ |
+| `==`     | equal to     | `!=`              | not equal to             |
+| `>`      | greater than | `<=`              | less than or equal to    |
+| `<`      | less than    | `>=`              | greater than or equal to |
+
+## 1.5 Introducing Classes
+
+> In C++ we define our own **data structures 数据结构** by defining a **class 类**. A class defines a type along with a collection of operations that are related to that type. As we’ve seen, to use a library facility, we must include the associated header. Similarly, we use headers to access classes defined for our own applications. Conventionally, header file names are derived from the name of a class defined in that header. Header files that we write usually have a suffix of .h, but some programmers use .H, .hpp, or .hxx. The standard library headers typically have no suffix at all. Compilers usually don’t care about the form of header file names, but IDEs sometimes do.  
+
+### 1.5.1 The *Sales_item* Class
+
+>For our bookstore problem, we’ll assume that the class is named *Sales_item*, which represent the total revenue, number
+>of copies sold, and average sales price for a book. How these data are stored or computed is not our concern for now.
+>
+>Every class defines a type. The type name is the same as the name of the class. Hence, our *Sales_item* class defines a type named *Sales_item*. As with the built-in types, we can define a variable of a class type. When we write:
+>
+>```c++
+>Sales_item item;
+>```
+>
+>we are saying that item is an object of type Sales_item. We often contract the phrase "an object of type Sales_item" to "a Sales_item object" or even more simply to "a Sales_item".  
+
+To use a class we need to know three things:
+
+- What is its name?
+- Where is it defined?
+- What operations does it support?
+
+#### Reading and Writing *Sales_items*
+
+```c++
+Sales_item book;
+// read ISBN, number of copies sold, and sales price
+std::cin >> book;
+// write ISBN, number of copies sold, total revenue, and average price
+std::cout << book << std::endl;
+```
+
+If the input to this program is `0-201-70353-X 4 24.99`, then the output will be `0-201-70353-X 4 99.96 24.99`.
+
+#### Adding *Sales_items*
+
+```c++
+Sales_item item1, item2;
+std::cin >> item1 >> item2; // read a pair of transactions
+std::cout << item1 + item2 << std::endl; // print their sum
+```
+
+If we give this program the following input `0-201-78345-X 3 20.00`, `0-201-78345-X 2 25.00`, our output is `0-201-78345-X 5 110 22`.
+
+> What makes this similarity noteworthy is that instead of reading and printing the sum of two integers, we’re reading and printing the sum of two Sales_item objects. Moreover, the sum has a new meaning—result of adding the components of two Sales_item objects.  
+
+#### Useing File Redirection
+
+It can be tedious to repeatedly type these transactions as input to the programs you are testing. Most operating systems support file redirection, which lets us associate a named file with the standard input and the standard output:
+
+```powershell
+> addItems <infile >outfile  
+```
+
+Assuming `>` is the system prompt and our addition program has been compiled into an executable file named addItems.exe), this command will read transactions from a file named `infile` and write its output to a file named `outfile` in the current directory.
 
 ##  Exercises
 
-### 1.1 - 1.2
+### Exercises Section 1.1.1
 
 1.1
 
@@ -251,7 +336,7 @@ True	# This is because our function returned zero, which means it runned and fin
 False	# This is because our function returned -1, which means our program failed.
 ```
 
-### 1.3 - 1.6
+### Exercises Section 1.2
 
 1.3
 
@@ -293,7 +378,7 @@ std::cout << " and " << v2;
 std::cout << " is " << v1 + v2 << std::endl;
 ```
 
-### 1.7 - 1.8
+### Exercises Section 1.3
 
 1.7
 
@@ -319,7 +404,7 @@ The 3rd one can be revised to:
 std::cout << "*/";
 ```
 
-### 1.9 - 1.11
+### Exercises Section 1.41
 
 1.9
 
@@ -339,12 +424,12 @@ The sum from 50 to 100 is 3825
 
 ```c++
 > .\1.11
-Please input two different numbers
-1 12
-1 2 3 4 5 6 7 8 9 10 11 12
+Please input two different numbers, the 1st one is greater
+5 1
+5 4 3 2 1
 ```
 
-### 1.12 - 1.15
+### Exercises Section 1.42
 
 1.12
 
@@ -368,5 +453,66 @@ Theoretically, *for* and *while* are the same. But it will be more convenient to
 
 1.15
 
+```powershell
+> cl /EHsc 1.15.cpp
+Microsoft (R) C/C++ Optimizing Compiler Version 19.29.30038.1 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+1.15.cpp
+1.15.cpp(6): error C2440: '=': cannot convert from 'const char [6]' to 'int'
+1.15.cpp(6): note: There is no context in which this conversion is possible
+1.15.cpp(8): error C2065: 'b': undeclared identifier
+1.15.cpp(10): error C2143: syntax error: missing ';' before ':'
+1.15.cpp(10): error C2059: syntax error: ':'
+```
+
+### Exercises Section 1.43
+
+1.16
+
+```powershell
+> .\1.16
+Please input some integers, and this program will output their sum. (Input ctrl-z to end input.)
+-1 4 5 6 2 ^Z
+Sum is: 16
+```
+
+### Exercises Section 1.4.4
+
+1.17
+
+If the input values are all equal, we will get only one line for that value with its counting times. If there are no duplicated values, we will get each line for each value and corresponding count is all 1.
+
+1.18
+
+```powershell
+> .\1.18
+1 1 1 1 1 ^Z
+1 occurs 5 times
+> .\1.18
+1 2 3 4 5 ^Z
+1 occurs 1 times
+2 occurs 1 times
+3 occurs 1 times
+4 occurs 1 times
+5 occurs 1 times
+```
+
+1.19
+
+```powershell
+> .\1.19
+Please input two different numbers
+1 6
+1 2 3 4 5 6
+> .\1.19
+Please input two different numbers
+6 1
+1 2 3 4 5 6
+```
+
+### Exercises Section 1.5.1
 
 
+
+### Exercises Section X

@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Some example codes
+VisualStudio2012/*
