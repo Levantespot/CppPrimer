@@ -151,15 +151,87 @@ int main()
 
 ## 1.3 A Word about Comments
 
-TODO
+There are two kinds of comments in C++: single-line 单行注释 and paired 界定符对注释.
+
+- A single-line comment starts with a double slash (`//`) and ends with a newline.  A comment of this kind can contain any text, including additional double slashes.  Thus, single-line comment do **nest**.
+- The other kind of comment begin with a `/*` and end with the next `*/`. These comments can include anything that is not a `*/`, including newlines.  Thus, comment pairs **do not nest**. Comment pairs can span multiple lines of a program but are not required to do so. Our style is to begin each line in the comment with an asterisk (`*`), thus indicating that the entire range is part of a multiline comment.
+
+Programs typically contain a mixture of both comment forms. Comment pairs generally are used for multi-line explanations, whereas double-slash comments tend to be used for half-line and single-line remarks:
+
+```c++
+#include <iostream>
+/*
+ * Simple main function:
+ * Read two numbers and write their sum
+ */
+int main()
+{
+	// prompt user to enter two numbers
+	std::cout << "Enter two numbers:" << std::endl;
+	int v1 = 0, v2 = 0;   // variables to hold the input we read
+	std::cin >> v1 >> v2; // read input
+	std::cout << "The sum of " << v1 << " and " << v2
+	<< " is " << v1 + v2 << std::endl;
+	return 0;
+}
+```
+
+We often need to comment out a block of code during debugging. Because that code might contain nested comment pairs, the best way to comment a block of code is to insert single-line comments at the beginning of each line in the section we want to ignore:
+
+```c++
+// /*
+//  * everything inside a single-line comment is ignored
+//  * including nested comment pairs
+//  */  
+```
 
 ## 1.4 Flow of Control
 
-When we use an `istream` as a condition, the input operator (§ 1.2, p. 8) returns its left operand, which in this case is `std::cin`. Therefore, condition tests `std::cin`.  the effect is to test the state of the stream. If the stream is valid—that is, if the stream hasn’t encountered an error—then the test succeeds. An `istream` becomes invalid when we hit `end-of-file` or encounter an invalid input, such as reading a value that is not an integer. An `istream` that is in an invalid state will cause the condition to yield false.  
+Statements normally execute sequentially: The first statement in a block is executed first, followed by the second, and so on.  
+
+### The *while* Statement
+
+A **while** statement repeatedly executes a section of code so long as a given condition is true. A **while** has the form:
+
+```c++
+while (condition) {
+	statement    
+}
+```
+
+A condition is an expression that yields a result that is either true or false.
+
+### The *for* Statement
+
+Each *for* statement has two parts: 
+
+- A header 循环头
+  - The header controls how often the body is executed. The header itself consists of three parts:
+  - An init-statement 初始化语句
+    - The init-statement is executed only once, on entry to the *for*.
+    - Variables defined in init-statement only exist inside the *for*.
+  - A condition 循环条件
+    - The *for* body will be executed right after the condition successes.
+  - An expression 表达式
+    - After executing the body, the expression will be the next one to execute.
+- A body 循环体
+
+### Reading an Unknown Number of Inputs
+
+When it's time that we won't know how many numbers to add, we can use an object of type istream as a condition to evaluate:
+
+```c++
+while (std::cin >> value)
+	sum += value; // equivalent to sum = sum + value
+```
+
+>When we use an istream as a condition, the effect is to test the state of the stream. If the stream is valid—that is, if the stream hasn’t encountered an error—then the test succeeds. An istream becomes invalid when we hit **end-of-file 文件结束符** or encounter an invalid input (e.g. value is a int, but we receive a string), such as reading a value that is not an integer. An istream that is in an invalid state will cause the condition to yield false.  On Windows systems we enter an end-of-file by typing a control-z. On UNIX systems, including on Mac OS X machines, end-of-file is usually control-d.
 
 ##  Exercises
 
-### 1.1
+### 1.1 - 1.2
+
+1.1
 
 ```powershell
 > cl /EHsc .\1.1.cpp
@@ -169,7 +241,7 @@ When we use an `istream` as a condition, the input operator (§ 1.2, p. 8) retur
 True	# This is because our function returned zero, which means it runned and finished correctly.
 ```
 
-### 1.2
+1.2
 
 ```powershell
 > cl /EHsc .\1.2.cpp
@@ -179,7 +251,9 @@ True	# This is because our function returned zero, which means it runned and fin
 False	# This is because our function returned -1, which means our program failed.
 ```
 
-### 1.3
+### 1.3 - 1.6
+
+1.3
 
 ```powershell
 > cl /EHsc .\1.3.cpp
@@ -187,7 +261,7 @@ False	# This is because our function returned -1, which means our program failed
 Hello, World
 ```
 
-### 1.4
+1.4
 
 ```powershell
 > cl /EHsc .\1.4.cpp
@@ -198,7 +272,7 @@ Enter two numbers:
 The product of 4 and 5 is 20
 ```
 
-### 1.5
+1.5
 
 ```powershell
 > cl /EHsc .\1.5.cpp
@@ -209,7 +283,7 @@ Enter two numbers:
 The sum of 4 and 5 is 9
 ```
 
-### 1.6
+1.6
 
 Not legal. Because `;` end a statement, which means `<<` in second and third statement don't have left-operand. To fix it, add `std::cout` at the head of 2nd & 3rd line like:
 
@@ -218,4 +292,81 @@ std::cout << "The sum of " << v1;
 std::cout << " and " << v2;
 std::cout << " is " << v1 + v2 << std::endl;
 ```
+
+### 1.7 - 1.8
+
+1.7
+
+```powershell
+> cl /EHsc .\1.7.cpp
+1.7.cpp
+1.7.cpp(5): warning C4138: '*/' found outside of comment
+1.7.cpp(5): error C2059: syntax error: '/'
+```
+
+1.8
+
+```c++
+std::cout << "/*";	// correct
+std::cout << "*/";  // correct
+std::cout << /* "*/" */;	// incorrect
+std::cout << /* "*/" /* "/*" */;	// correct
+```
+
+The 3rd one can be revised to: 
+
+```c++
+std::cout << "*/";
+```
+
+### 1.9 - 1.11
+
+1.9
+
+```c++
+> .\1.9
+The sum from 50 to 100 is 3825
+```
+
+1.10
+
+```c++
+> .\1.10
+10 9 8 7 6 5 4 3 2 1 0
+```
+
+1.11
+
+```c++
+> .\1.11
+Please input two different numbers
+1 12
+1 2 3 4 5 6 7 8 9 10 11 12
+```
+
+### 1.12 - 1.15
+
+1.12
+
+The final value of sum is 0.
+
+1.13
+
+```c++
+> .\1.13a
+The sum from 50 to 100 is 3825
+```
+
+```c++
+> .\1.13b
+10 9 8 7 6 5 4 3 2 1 0
+```
+
+1.14
+
+Theoretically, *for* and *while* are the same. But it will be more convenient to use *while* if you don't want to initialize a new variable. Otherwise the *for* statement can make your code much more compact.
+
+1.15
+
+
 
