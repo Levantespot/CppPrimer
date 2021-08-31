@@ -302,15 +302,16 @@ If we give this program the following input `0-201-78345-X 3 20.00`, `0-201-7834
 
 > What makes this similarity noteworthy is that instead of reading and printing the sum of two integers, we’re reading and printing the sum of two Sales_item objects. Moreover, the sum has a new meaning—result of adding the components of two Sales_item objects.  
 
-#### Useing File Redirection
+#### Using File Redirection
 
 It can be tedious to repeatedly type these transactions as input to the programs you are testing. Most operating systems support file redirection, which lets us associate a named file with the standard input and the standard output:
 
-```powershell
-> addItems <infile >outfile  
+```bash
+$ addItems <infile >outfile # Bash for Unix
+> cat infile | addItem > outfile # PowerShell for Windows
 ```
 
-Assuming `>` is the system prompt and our addition program has been compiled into an executable file named addItems.exe), this command will read transactions from a file named `infile` and write its output to a file named `outfile` in the current directory.
+Assuming `>` or `$` is the system prompt and our addition program has been compiled into an executable file named addItems.exe), this command will read transactions from a file named `infile` and write its output to a file named `outfile` in the current directory.
 
 ##  Exercises
 
@@ -512,6 +513,27 @@ Please input two different numbers
 ```
 
 ### Exercises Section 1.5.1
+
+1.20
+
+```powershell
+> cat 1.20.txt | .\1.20.exe
+Please input every transaction with ISBN, number of copies sold, and sales price.
+ISBN num_sold price_sum price_each
+0-201-78341-X 1 20 20
+ISBN num_sold price_sum price_each
+0-201-78342-X 2 50 25
+ISBN num_sold price_sum price_each
+0-202-68341-X 3 60 20
+ISBN num_sold price_sum price_each
+0-202-68342-X 4 100 25
+ISBN num_sold price_sum price_each
+0-301-58341-X 5 100 20
+ISBN num_sold price_sum price_each
+0-301-58342-X 6 150 25
+```
+
+
 
 
 
