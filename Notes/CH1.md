@@ -313,6 +313,16 @@ $ addItems <infile >outfile # Bash for Unix
 
 Assuming `>` or `$` is the system prompt and our addition program has been compiled into an executable file named addItems.exe), this command will read transactions from a file named `infile` and write its output to a file named `outfile` in the current directory.
 
+### 1.5.2 Member Functions
+
+A **member function(成员函数)** is a function that is defined as part of a class. Member functions are sometimes referred to as **methods (方法)**. The **dot operator** (the `.` operator **点运算符**) was used to access member of an object of class type. And the **call operator** (the `()` operator 调用运算符) was used to call a function. And the call operator enclose a (possibly empty) list of **arguments 参数**.
+
+## 1.6 The Bookstore Program
+
+
+
+
+
 ##  Exercises
 
 ### Exercises Section 1.1.1
@@ -533,8 +543,77 @@ ISBN num_sold price_sum price_each
 0-301-58342-X 6 150 25
 ```
 
+1.21
 
+```powershell
+> .\1.21
+Please input two Sales_item objects. (ISBN, number of copies sold, and sales price)
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
+Their sum is: 0-201-78345-X 5 110 22
+```
+
+1.22
+
+```powershell
+> .\1.22
+Please input several Sales_item objects.(ISBN, number of copies sold, and sales price)
+0-201-78345-X 3 20.00
+0-201-78345-X 3 20.00
+0-201-78345-X 3 25.00
+^Z
+Their sum is: 0-201-78345-X 9 195 21.6667
+```
+
+### Exercises Section 1.5.2
+
+1.23
+
+```powershell
+> .\1.23
+Please input several transactions. Note that ISBN is in descending order.
+101 2 20
+101 3 30
+201 1 25
+The times of occurence of ISBN:101 is 2
+201 2 20
+201 2 25
+201 2 25
+201 2 25
+203 2 25
+The times of occurence of ISBN:201 is 5
+204 2 25
+The times of occurence of ISBN:203 is 1
+^Z
+The times of occurence of ISBN:204 is 1
+```
+
+1.24
+
+```powershell
+> .\1.24
+Please input several transactions. Note that ISBN is in descending order.
+101 2 20
+101 3 30
+201 1 25
+The times of occurence of ISBN:101 is 2
+And, their sum is 101 5 130 26
+201 2 20
+201 2 25
+201 2 25
+201 2 25
+203 2 25
+The times of occurence of ISBN:201 is 5
+And, their sum is 201 9 215 23.8889
+204 2 25
+The times of occurence of ISBN:203 is 1
+And, their sum is 203 2 50 25
+^Z
+The times of occurence of ISBN:204 is 1
+And, their sum is 204 2 50 25
+```
 
 
 
 ### Exercises Section X
+
