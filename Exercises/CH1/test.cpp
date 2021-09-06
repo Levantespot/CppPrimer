@@ -3,10 +3,9 @@
 
 int main()
 {   
-    const int max_bucket_size = 100;
-    int bucket[max_bucket_size] = {0};
-
-    Sales_item new_item;
-
+    unsigned char b = 1;
+    signed char c = b;
+    std::cout << c << std::endl;
+    
     return 0;
 }
