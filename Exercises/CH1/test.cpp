@@ -2,10 +2,10 @@
 #include "../include/Sales_item.h"
 
 int main()
-{   
-    unsigned char b = 1;
-    signed char c = b;
-    std::cout << c << std::endl;
-    
+{
+    int i = 1, j = 2;
+    int &refi = i;
+    refi = j;
+    std::cout << i << std::endl;
     return 0;
 }
