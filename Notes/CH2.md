@@ -188,6 +188,8 @@ An object that is **initialized 初始化** gets the specified value at the mome
 double price = 109.99, discount = price * 0.16;
 ```
 
+Notes: Initialization is not assignment. Initialization happens when a variable is given a value when it is created. Assignment obliterates an object’s current value and replaces that value with a new one.  
+
 #### List Initialization 列表初始化
 
 For example, we can use any of the following four different ways to define an `int` variable named `units_sold` and initialize it to `0`:  
@@ -209,9 +211,10 @@ int c(ld), d = ld; // ok: but value will be truncated
 
 #### Default Initialization 默认初始化
 
-When we define a variable without an initializer, the variable is default initialized. What that default value is depends on the type of the variable and may also depend on where the variable is defined.
+When we define a variable without an initializer, the variable is default initialized. What that default value is depends on the type of the variable and may also depend on where the variable is defined:
 
-The value of an object of built-in type that is not explicitly initialized depends on where it is defined: Variables defined outside any function body are initialized to zero. Variables of built-in type defined inside a function are **uninitialized 不被初始化的**. The value of an uninitialized variable of built-in type is **undefined**.
+- Variables of built-in type defined outside any function body are initialized to zero.
+- Variables of built-in type defined inside a function are **uninitialized 不被初始化的**. The value of an uninitialized variable of built-in type is **undefined**. The compiler will complain an error when trying to access the undefined variables.
 
 ```c++
 #include <iostream>
@@ -227,9 +230,9 @@ int main()
 
 Objects of class type that we do not explicitly initialize have a value that is defined by the class.
 
-### 2.2.2 Variable Declarations（声明）and Definitions（定义）
+### 2.2.2 Variable Declarations and Definitions
 
-C++ supports **Separate compilation 分离式编译**, which lets us split our programs into several files, each of which can be compiled independently. To support that, C++ distinguishes between declarations and definitions. A **declaration** makes a name known to the program. A file that wants to use a name defined elsewhere needs to include a declaration for that name. A **definition** creates the associated entity. **声明**规定变量的类型和名字，同时我们就可以使用该变量。定义则是在声明的基础上申请空间，也可能为变量赋初始值。
+C++ supports **Separate compilation 分离式编译**, which lets us split our programs into several files, each of which can be compiled independently. To support that, C++ distinguishes between declarations and definitions. A **declaration 声明** makes a name known to the program. A file that wants to use a name defined elsewhere needs to include a declaration for that name. A **definition 定义** creates the associated entity. **声明**规定变量的类型和名字，同时我们就可以使用该变量。定义则是在声明的基础上申请空间，也可能为变量赋初始值。
 
 To obtain a declaration that is not also a definition, we add the `extern` keyword and may not provide an explicit initializer:
 
@@ -323,6 +326,8 @@ double dval = 3.14;
 int &refVal5 = dval; // error: initializer must be an int object
 ```
 
+Note: Once we have defined a reference, there is no way to make that reference refer to a different object.
+
 ### 2.3.2 Pointers
 
 A pointer is a compound type that “points to” another type. 
@@ -334,15 +339,207 @@ Unlike a reference:
 - A pointer need not be initialized at the time it is defined. 
 - Like other built-in types, pointers defined at block scope have undefined value if they are not initialized.
 
+We define a pointer type by writing a declarator of the form `*d`, where `d` is the name being defined. The `*` **must** be repeated for each pointer variable:
+
+```c++
+int *ip1, *ip2; // both ip1 and ip2 are pointers to int
+double dp, *dp2; // dp2 is a pointer to double; dp is a double
+```
+
+#### Taking the Address of an Object
+
+A pointer holds the address of another object. We get the address of an object by using the address-of operator 取地址符 (the `&` operator):
+
+```c++
+int ival = 42;
+int *p = &ival; // p holds the address of ival; p is a pointer to ival
+```
+
+Notes: Because references are not objects, they don’t have addresses. Hence, we may not define a pointer to a reference. Also, the types of the pointer and the object to which it points must match, except const pointer and class inheritance.
+
+#### Pointer Value
+
+The value (i.e., the address) stored in a pointer can be in one of four states:
+
+1. It can point to an object.
+2. It can point to the location just immediately past the end of an object.
+3. It can be a null pointer, indicating that it is not bound to any object.
+4. It can be invalid; values other than the preceding three are **invalid**.
+
+#### Using a Pointer to Access an Object
+
+When a pointer points to an object, we can use the dereference operator 解引用符 (the `*` operator) to access that object:
+
+```c++
+int ival = 42;
+int *p = &ival; // p holds the address of ival; p is a pointer to ival
+cout << *p; // * yields the object to which p points; prints 42
+*p = 0; // * yields the object; we assign a new value to ival through p
+cout << *p; // prints 0
+```
+
+>KEY CONCEPT: SOME SYMBOLS HAVE MULTIPLE MEANINGS
+>
+>Some symbols, such as `&` and `*`, are used as both an operator in an expression and as part of a declaration. The context in which a symbol is used determines what the symbol means:  
+>
+>```c++
+>int i = 42;
+>int &r = i; // & follows a type and is part of a declaration; r is a reference
+>int *p; // * follows a type and is part of a declaration; p is a pointer
+>p = &i; // & is used in an expression as the address-of operator
+>*p = i; // * is used in an expression as the dereference operator
+>int &r2 = *p; // & is part of the declaration; * is the dereference operator
+>```
+>
+>Because the same symbol is used with very different meanings, it can be helpful to ignore appearances and think of them as if they were different symbols.  
+
+#### Null Pointers
+
+A **null pointer 空指针** does not point to any object. Code can check whether a pointer is null before attempting to use it.  There are several ways to obtain a null pointer:
+
+```c++
+int *p1 = nullptr; // equivalent to int *p1 = 0;
+int *p2 = 0; // directly initializes p2 from the literal constant 0
+
+// must #include cstdlib
+int *p3 = NULL; // equivalent to int *p3 = 0;
+```
+
+Older programs sometimes use a **preprocessor variable 预处理变量** named `NULL`, which the cstdlib header defines as `0`.  Preprocessor variables are managed by the preprocessor, and are not part of the `std` namespace. As a result, we refer to them directly without the `std::` prefix. When we use a preprocessor variable, the preprocessor automatically replaces the variable by its value. Hence, initializing a pointer to NULL is equivalent to initializing it to `0`.
+
+Note: It is illegal to assign an `int` variable to a pointer, even if the variable’s value happens to be `0`.
+
+Suggestion: 
+
+- Modern C++ programs generally should avoid using `NULL` and use `nullptr` instead.
+- Initialize all pointers because uninitialized pointers are a common source of run-time errors.
+
+#### void* Pointers
+
+he type `void*` is a special pointer type that can hold the address of any object. Like any other pointer, a `void*` pointer holds an address, but the type of the object at that address is unknown:
+
+```c++
+double obj = 3.14, *pd = &obj;
+// ok: void* can hold the address value of any data pointer type
+void *pv = &obj; // obj can be an object of any type
+pv = pd; // pv can hold a pointer to any type
+```
+
+Generally, we use a `void*` pointer to deal with memory as memory, rather than using the pointer to access the object stored in that memory.
+
+We can:
+
+- compare it to another pointer
+- pass it to or return it from a function
+- assign it to another void* pointer
+
+We can't:
+
+- use a void* to operate on the object it addresses—we don’t know that object’s type, and the type determines what operations we can perform on the object.
+
+```c++
+int a = 1, b = 2;
+void *pa = nullptr, *pb = nullptr, *pbig = nullptr;
+pa = &a; pb = &b;	// valid
+if(pa != pb){		// valid
+    std::cout << *pa << *pb << std::endl;	// invalid
+    if(*pa > *pb){	// invalid
+        pbig = pa;	// valid
+    }else{
+        pbig = pb;	// valid
+    }
+}
+```
+
+§ 4.11.3 will show how we can retrieve the address stored in a `void*` pointer.
+
+### 2.3.3 Understanding Compound Type Declarations
+
+Type modifications, like `*` and `&`, are part of declarators. They say nothing about any other objects that might be declared in the same statement.
+
+```c++
+// i is an int; p is a pointer to int; r is a reference to int
+// They all have a basic type of int. With differecnt type modifications, they become different objects eventually.
+int i = 1024, *p = &i, &r = i;
+```
+
+#### Defining Multiple Variables
+
+```c++
+int* p; // legal but might be misleading
+int* p1, p2; // p1 is a pointer to int; p2 is an int
+int *p1, *p2; // both p1 and p2 are pointers to int, easy to understand
+```
+
+#### Pointers to Pointers
+
+In general, there are no limits to how many type modifiers can be applied to a declarator. A pointer is an object in memory, so like any object it has an address. Therefore, we can store the address of a pointer in another pointer.
+
+```c++
+int ival = 1024;
+int *pi = &ival; // pi points to an int
+int **ppi = &pi; // ppi points to a pointer to an int
+```
+
+Just as dereferencing a pointer to an `int` yields an `int`, dereferencing a pointer to a pointer yields a pointer. To access the underlying object, we must dereference the original pointer twice:  
+
+```c++
+cout << "The value of ival\n"
+	 << "direct value: " << ival << "\n"
+	 << "indirect value: " << *pi << "\n"
+	 << "doubly indirect value: " << **ppi
+	 << endl;
+```
+
+#### References to Pointers
+
+A reference is not an object. Hence, we may not have a pointer to a reference. However, because a pointer is an object, we can define a reference to a pointer:
+
+```c++
+int i = 42;
+int *p; // p is a pointer to int
+int *&r = p; // r is a reference to the pointer p
+r = &i; // r refers to a pointer; assigning &i to r makes p point to i
+*r = 0; // dereferencing r yields i, the object to which p points; changes i to 0
+```
+
+The easiest way to understand the type of `r` is to read the definition right to left. The symbol closest to the name of the variable (in this case the `&` in `&r`) is the one that has the most immediate effect on the variable’s type. Thus, we know that `r` is a reference. The rest of the declarator determines the type to which `r` refers. The next symbol, `*` in this case, says that the type `r` refers to is a pointer type. Finally, the base type of the declaration says that `r` is a reference to a pointer to an `int`.
+
 ## 2.4 const Qualifier
 
+We can make a variable unchangeable by defining the variable’s type as `const`:
+
+```c++
+const int bufSize = 512; // input buffer size
+```
+
+defines bufSize as a constant. Any attempt to assign to `bufSize` is an error. 
+
+```c++
+bufSize = 512; // error: attempt to write to const object
+```
+
+#### Initialization
+
+Because we can’t change the value of a `const` object after we create it, it must be initialized:
+
+```c++
+const int i = get_size(); // ok: initialized at run time
+const int j = 42; // ok: initialized at compile time
+const int k; // error: k is uninitialized const
+```
+
+Among the operations that don’t change the value of an object is initialization—when we use an object to initialize another object, it doesn’t matter whether either or both of the objects are `const`s:
+
 ## 2.5 Dealing with  Types
+
+
 
 ## 2.6 Defining Our Own Data Structures
 
 
 
----
+
 
 ##  Exercises
 
@@ -540,6 +737,71 @@ int i = 0, &r1 = i; double d = 0, &r2 = d;
 
 ```powershell
 10 10
+```
+
+### Exercises Section 2.3.2
+
+2.18
+
+```c++
+int a = 0;
+int *pa = nullptr;
+pa = &a;	// change the value of a pointer
+*pa = 1;	// change the value to which it points
+```
+
+2.19
+
+```
+Key difference between references and pointers:
+
+Pointers are objects, not references.
+```
+
+2.20
+
+```
+It equals i=i*i;
+```
+
+2.21
+
+```c++
+int i = 0;
+(a) double* dp = &i;	// invalid, mismatched type
+(b) int *ip = i; 		// invalid, cannot assign a variable to a pointer
+(c) int *p = &i;		// valid
+```
+
+2.22
+
+```c++
+if (p) // whether the pointer p is nullptr
+if (*p) // whether the variable to which the pointer p points equalls zero
+```
+
+2.23
+
+```
+It's only possible to determines if it is a null pointer. Otherwise we cannot figure out whether it points to a valid object.
+```
+
+2.24
+
+```
+Since void pointer can point to a memory of any types, it's legal to assign the address of i to pointer p.
+
+Pointer lp has a different type to variable i, so it's illegal to assign the address of i to lp.
+```
+
+### Exercises Section 2.3.3
+
+2.25
+
+```c++
+(a) int* ip, i, &r = i; // ip is a null pointer; i has a type of int; r is a reference to variable i;
+(b) int i, *ip = 0; // i is a variable type of int; ip is a null pointer.
+(c) int* ip, ip2; // ip is a uninitialized pointer; ip2 is a variable type of int.
 ```
 
 
