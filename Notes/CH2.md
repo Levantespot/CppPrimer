@@ -230,7 +230,7 @@ int main()
 
 Objects of class type that we do not explicitly initialize have a value that is defined by the class.
 
-### 2.2.2 Variable Declarations and Definitions
+### 2.2.2 Variable Declarations & Definitions & `extern`
 
 C++ supports **Separate compilation 分离式编译**, which lets us split our programs into several files, each of which can be compiled independently. To support that, C++ distinguishes between declarations and definitions. A **declaration 声明** makes a name known to the program. A file that wants to use a name defined elsewhere needs to include a declaration for that name. A **definition 定义** creates the associated entity. **声明**规定变量的类型和名字，同时我们就可以使用该变量。定义则是在声明的基础上申请空间，也可能为变量赋初始值。
 
@@ -243,10 +243,37 @@ int j; 			// declares and defines j
 
 *Any declaration that includes an explicit initializer is a definition.* We can provide an initializer on a variable defined as `extern`, but doing so overrides the `extern`. An `extern` that has an initializer is a definition.
 
+```c++
+int main()
+{
+	extern int i = 1;		// error
+
+	extern int j; j = 1;	// ok    
+}
+```
+
 Note
 
-- It is an error to provide an initializer on an `extern` inside a function.
-- Variables must be defined exactly once but can be declared many times.
+- It is an error to provide an initializer on an `extern` inside a function. 不能在函数体内部初始化含有 `extern` 关键字的变量。
+- Variables must be defined exactly once but can be declared many times. 一个变量只能被定义一次，但可以被多次声明。
+
+```c++
+// test.h
+int i = 0;
+
+// test.cpp
+// Note: The initialization or declaration of i and j separately occurs only once in this source code file.
+# include "test.h"
+extern int j = 2;	// ok
+extern int i;		// ok
+extern int i = 1;	// error, multiple initialization
+extern const int i;	// error, different type modifier
+int main()
+{
+    extern int i = 1; 		// error, can't initialize a variable defined as extern in a block
+    extern int i; i = 1; 	// ok
+}
+```
 
 ### 2.2.3 Identifiers 标识符
 
@@ -414,7 +441,7 @@ Suggestion:
 - Modern C++ programs generally should avoid using `NULL` and use `nullptr` instead.
 - Initialize all pointers because uninitialized pointers are a common source of run-time errors.
 
-#### void* Pointers
+#### `void*` Pointers
 
 he type `void*` is a special pointer type that can hold the address of any object. Like any other pointer, a `void*` pointer holds an address, but the type of the object at that address is unknown:
 
@@ -505,7 +532,7 @@ r = &i; // r refers to a pointer; assigning &i to r makes p point to i
 
 The easiest way to understand the type of `r` is to read the definition right to left. The symbol closest to the name of the variable (in this case the `&` in `&r`) is the one that has the most immediate effect on the variable’s type. Thus, we know that `r` is a reference. The rest of the declarator determines the type to which `r` refers. The next symbol, `*` in this case, says that the type `r` refers to is a pointer type. Finally, the base type of the declaration says that `r` is a reference to a pointer to an `int`.
 
-## 2.4 const Qualifier
+## 2.4 const Qualifier 限定符
 
 We can make a variable unchangeable by defining the variable’s type as `const`:
 
@@ -524,22 +551,423 @@ bufSize = 512; // error: attempt to write to const object
 Because we can’t change the value of a `const` object after we create it, it must be initialized:
 
 ```c++
-const int i = get_size(); // ok: initialized at run time
-const int j = 42; // ok: initialized at compile time
-const int k; // error: k is uninitialized const
+const int i = get_size(); 	// ok: initialized at run time
+const int j = 42; 			// ok: initialized at compile time
+const int k; 				// error: k is uninitialized const
 ```
 
-Among the operations that don’t change the value of an object is initialization—when we use an object to initialize another object, it doesn’t matter whether either or both of the objects are `const`s:
+When we use an object to initialize another object, it doesn’t matter whether either or both of the objects are `const`s:
+
+```c++
+int i = 42;
+const int ci = i; 	// ok: the value in i is copied into ci
+int j = ci; 		// ok: the value in ci is copied into j
+```
+
+#### By Default, const Objects Are Local to a File 不是特别懂
+
+When a `const` object is initialized from a compile-time constant 编译时初始化, the compiler will usually replace uses of the variable with its corresponding value during compilation. 有时候编译器会直接用字面量替换变量。To substitute the value for the variable, the compiler has to see the variable’s initializer.
+
+Sometimes we have a `const` variable that we want to share across multiple files but whose initializer is not a constant expression. In this case, we want to define the `const` in one file, and declare it in the other files that  use that object. To define a single instance of a const variable, we use the keyword `extern` on both its definition and declaration(s):
+
+```c++
+// file_1.cc defines and initializes a const that is accessible to other files
+extern const int bufSize = fcn();
+// file_1.h
+extern const int bufSize; // same bufSize as defined in file_1.cc
+```
+
+To sum up, to share a `const` object among multiple files, you must define the variable as `extern`.
+
+### 2.4.1  Reference to const
+
+As with any other object, we can bind a reference to an object of a `const` type. To do so we use a **reference to const 对常量的引用**, which is a reference that refers to a `const` type. Unlike an ordinary reference, a reference to `const` cannot be used to change the object to which the reference is bound:
+
+```c++
+const int ci = 1024;
+const int &r1 = ci;	// ok: both reference and underlying object are const
+r1 = 42;			// error: r1 is a reference to const
+int &r2 = ci;		// error: nonconst reference to a const object
+```
+
+#### Initialization and References to const
+
+Generally a reference must match the type of the object to which it refers. But we can initialize a **reference to const 常量引用** from any expression that can be converted (§ 2.1.2) to the type of the reference. In particular, we can bind a reference to `const` to a non`const` object, a **literal**, or a more general expression. 通常来说引用需要类型配对，但是在初始化常量引用时，可以使用任意可被转化为引用类型的表达式（对象、字面量等均可），即 `const type_A &var_A = var_B`，其中 `var_B` 的类型 `type_B` 可被转化为 `type_A` 即可，两者不一定相同。
+
+```c++
+// when type_A == type B
+int i = 42;
+const int &r1 = i;		// ok: we can bind a const int& to a plain int object
+const int &r2 = 42; 	// ok: r1 is a reference to const
+const int &r3 = r1 * 2; // ok: r3 is a reference to const
+int &r4 = r1 * 2; 		// error: r4 is a plain, nonconst reference
+```
+
+```c++
+// when type_A != type B
+double dval = 3.14;		
+const int &ri = dval;	// ok, ri refers to an int
+```
+
+When types are different, to ensure that the object to which `ri` is bound is an `int`, the compiler transforms last line into something like:
+
+```c++
+const int temp = dval; 	// create a temporary const int from the double
+const int &ri = temp; 	// bind ri to that temporary    
+```
+
+#### A Reference to const May Refer to an Object That Is Not const
+
+It is important to realize that a reference to `const` restricts only what we can do through that reference. Binding a reference to `const` to an object says nothing about whether the underlying object itself is `const`. 引用本身是否是 `const` 并不会影响被引用的对象。Because the underlying object might be `nonconst`, it might be changed by other means:
+
+```c++
+int i = 42;
+int &r1 = i; 		// r1 bound to i
+const int &r2 = i; 	// r2 also bound to i; but cannot be used to change i
+r1 = 0; 			// ok: r1 is not const; i is now 0
+r2 = 0; 			// error: r2 is a reference to const
+```
+
+Binding `r2` to the (non`const`) `int i` is legal. However, we cannot use `r2` to change `i`. Even so, the value in `i` still might change. We can change `i` by assigning to it directly, or by assigning to another reference bound to `i`, such as `r1`.
+
+### 2.4.2 Pointers and const
+
+Like a reference to `const`, **a pointer to const 指向常量的指针** (§ 2.4.1) may not be used to change the object to which the pointer points. We may store the address of a `const` object only in a pointer to `const`:
+
+```c++
+const double pi = 3.14; 	// pi is const; its value may not be changed
+double *ptr = &pi; 			// error: ptr is a plain pointer
+const double *cptr = &pi; 	// ok: cptr may point to a double that is const
+*cptr = 42; 				// error: cannot assign to *cptr
+```
+
+Usually the types of a pointer and the object to which it points must match. The first exception is that we can use a pointer to `const` to point to a `nonconst` object:
+
+```c++
+double dval = 3.14; // dval is a double; its value can be changed
+const double *cptr = &dval; 		// ok: but can’t change dval through cptr
+```
+
+Like a reference to `const`, a pointer to `const` says nothing about whether the object to which the pointer points is `const`. Defining a pointer as a pointer to `const` affects only what we can do with the pointer. It is important to remember that there is no guarantee that an object pointed to by a pointer to `const` won’t change.
+
+#### `const` Pointers 常量指针
+
+Like any other `const` object, a `const` pointer must be initialized, and once initialized, its value (i.e., the address that it holds) may not be changed.  We indicate that the pointer is `const` by putting the `const` after the `*`. This placement indicates that it is the pointer, not the pointed-to type, that is `const`:
+
+```c++
+int a = 0;
+int *const pa = &a; // pa is a const pointer and will always point to a
+const double pi = 3.14159;
+const double *const pip = &pi; // pip is a const pointer to a const object
+```
+
+The fact that a pointer is itself `const` says nothing about whether we can use the pointer to change the underlying object. Whether we can change that object depends entirely on the type to which the pointer points.
+
+```c++
+*pip = 2.72;// error: pip is a pointer to const
+*pa = 1; 	// ok: equals a = 1, the object to which curErr points is non-const.
+int b = 2;
+pa = &b;	// error, curErr is a const pointer.
+```
+
+### 2.4.3 Top-Level const
+
+We use the term **top-level 顶层** `const` to indicate that the pointer itself is a `const`. When a pointer can point to a `const` object, we refer to that `const` as a **low-level 底层** `const`.
+
+更广泛来说，顶层 `const` 可以指任何对象类型（如运算类型、类类型、指针类型），且该对象类型是 `const`；底层 `const` 可以指复合类型，如指针和引用。
+
+```c++
+int i = 0;
+int *const p1 = &i; 	// we can’t change the value of p1; const is top-level
+const int ci = 42; 		// we cannot change ci; const is top-level
+const int *p2 = &ci; 	// we can change p2; const is low-level
+const int *const p3 = p2; 	// right-most const is top-level, left-most is not
+const int &r = ci; 		// const in reference types is always low-level
+```
+
+The distinction between top-level and low-level matters when we copy an object. When we copy an object, top-level `consts` are ignored: 当复制的时候，顶层 const 被忽略：
+
+```c++
+i = ci; // ok: copying the value of ci; top-level const in ci is ignored
+p2 = p3; // ok: pointed-to type matches; top-level const in p3 is ignored
+```
+
+When we copy an object, both objects must have the same low-level `const` qualification or there must be a conversion between the types of the two objects. 复制的时候，底层 const 必须相同，或者两对象的类型可以被相互转换。In general, we can convert a `nonconst` to `const` but not the other way round:
+
+```c++
+int *p = p3; 	// error: p3 has a low-level const but p doesn’t
+p2 = p3; 		// ok: p2 has the same low-level const qualification as p3
+p2 = &i; 		// ok: we can convert int* to const int*
+int &r = ci; 	// error: can’t bind an ordinary int& to a const int object
+const int &r2 = i; // ok: can bind const int& to plain int
+```
+
+### 2.4.4 constexpr and Constant Expressions
+
+A **constant expression 常量表达式** is an expression whose value cannot change and that can be evaluated at compile time. 常量表达式值不会改变，且在编译的时候就能得到值。
+
+A literal is a constant expression. A `const` object that is initialized from a constant expression is also a constant expression. Whether a given object (or expression) is a constant expression depends on the **types** and the **initializers**:
+
+```c++
+const int max_files = 20; 	// max_files is a constant expression
+const int limit = max_files + 1; 	// limit is a constant expression
+int staff_size = 27; 		// staff_size is not a constant expression
+const int sz = get_size(); 	// sz is not a constant expression, because the value of its initializer is not known until run time
+```
+
+#### `constexpr` Variables
+
+Variables declared as `constexpr` are implicitly `const` and must be initialized by constant expressions:
+
+```c++
+constexpr int mf = 20; 			// 20 is a constant expression
+constexpr int limit = mf + 1; 	// mf + 1 is a constant expression
+constexpr int sz = size(); 		// ok only if size is a constexpr function
+```
+
+#### Pointers and `constexpr`
+
+It is important to understand that when we define a pointer in a `constexpr` declaration, the `constexpr` specifier applies to the pointer, not the type to which the pointer points:
+
+```c++
+const int *p = nullptr; 	// p is a pointer to a const int
+constexpr int *q = nullptr; // q is a const pointer to int
+constexpr const int *r = nullptr;	// r is a const pointer to a const int
+```
 
 ## 2.5 Dealing with  Types
 
+### 2.5.1 Type Aliases
 
+A **type alias 类型别名** is a name that is a synonym for another type. Type aliases let us simplify complicated type definitions, making those types easier to use. Type aliases also let us emphasize the purpose for which a type is used.
 
-## 2.6 Defining Our Own Data Structures
+We can define a type alias in one of two ways. Traditionally, we use a `typedef`:
 
+```c++
+typedef double wages; 	// wages is a synonym for double
+typedef wages base, *p; // base is a synonym for double, p for double*
+```
 
+The new standard introduced a second way to define a type alias, via an **alias declaration 别名声明**. An alias declaration starts with the keyword `using` followed by the alias name and an `=`.   
 
+```c++
+using SI = Sales_item; // SI is a synonym for Sales_item
+```
 
+A type alias is a type name and can appear wherever a type name can appear:
+
+```c++
+wages hourly, weekly; // same as double hourly, weekly;
+SI item; // same as Sales_item item
+```
+
+#### Pointers, `const`, and Type Aliases
+
+```c++
+typedef char *pstring;
+const pstring cstr = 0; // cstr is a constant pointer to char
+const pstring *ps; 		// ps is a pointer to a constant pointer to char
+```
+
+The base type in these declarations is `const pstring`. As usual, a `const` that appears in the base type modifies the given type. The type of `pstring` is “pointer to char.” So, `const pstring` is a constant pointer to char—not a pointer to `const char`.
+
+It can be tempting, albeit incorrect, to interpret a declaration that uses a type alias by conceptually replacing the alias with its corresponding type:  不能用「直接替换原类型」的方法来理解别名：
+
+```c++
+const pstring cstr = 0; 
+const char *cstr = 0;	// wrong interpretation of the previous line
+```
+
+When we use `pstring` in a declaration, the base type of the declaration is a pointer type. When we rewrite the declaration using `char*`, the base type is `char` and the `*` is part of the declarator. In this case, `const char` is the base type. This rewrite declares `cstr` as a pointer to` const char` rather than as a `const` pointer to `char`.
+
+### 2.5.2 The auto Type Specifier
+
+Unlike type specifiers, such as double, that name a specific type, `auto` tells the compiler to deduce the type from the initializer. By implication, a variable that uses auto as its type specifier must have an initializer:
+
+```c++
+// the type of item is deduced from the type of the result of adding val1 and val2
+auto item = val1 + val2; // item initialized to the result of val1 + val2
+```
+
+As with any other type specifier, we can define multiple variables using `auto`. Because a declaration can involve only a single base type, the initializers for all the variables in the declaration must have types that are consistent with each other:
+
+```c++
+auto i = 0, *p = &i; 	// ok: i is int and p is a pointer to int
+auto sz = 0, pi = 3.14; // error: inconsistent types for sz and pi
+```
+
+#### Compound Types, `const`, and `auto`
+
+The type that the compiler infers for auto is not always exactly the same as the initializer’s type. Instead, the compiler adjusts the type to conform to normal initialization rules.
+
+First, when we use a reference as an initializer, the initializer is the corresponding object. The compiler uses that object’s type for `auto`’s type deduction:  
+
+```c++
+int i = 0, &r = i;
+auto a = r; // a is an int (r is an alias for i, which has type int)
+```
+
+Second, `auto` ordinarily ignores top-level `const`s (§ 2.4.3). As usual in initializations, low-level `const`s, such as when an initializer is a pointer to `const`, are kept: 通常 `auto` 会忽略掉顶层 `const`，保留底层 `const`：
+
+```c++
+const int ci = i, &cr = ci;
+auto b = ci; 	// b is an int (top-level const in ci is dropped)
+auto c = cr; 	// c is an int (cr is an alias for ci whose const is top-level)
+auto d = &i; 	// d is an int* (& of an int object is int*)
+auto e = &ci; 	// e is const int* (& of a const object is low-level const)
+```
+
+If we want the deduced type to have a top-level `const`, we must say so explicitly:
+
+```c++
+const auto f = ci; // deduced type of ci is int; f has type const int
+```
+
+We can also specify that we want a reference to the auto-deduced type. Normal initialization rules still apply:
+
+```c++
+auto &g = ci; 	// g is a const int& that is bound to ci
+auto &h = 42; 	// error: we can’t bind a plain reference to a literal
+const auto &j = 42; // ok: we can bind a const reference to a literal
+```
+
+When we ask for a reference to an auto-deduced type, top-level `consts` in the initializer are not ignored. 对自动类型的引用时，初始值的顶层 `const` 则不会省略。
+
+### 2.5.3 The `decltype` Type Specifier
+
+`decltype` will return the type of its operand without evaluating the expression 并不会计算表达式的值:
+
+```c++
+decltype(f()) sum = x; // sum has whatever type f returns
+```
+
+Here, the compiler does not call `f`, but it uses the type that such a call would return as the type for `sum`.
+
+略微不同于 `auto`，若 `decltype` 使用的是变量，则会保留变量的顶层 `const` 和引用：
+
+```c++
+const int ci = 0, &cj = ci;
+decltype(ci) x = 0; // x has type const int
+decltype(cj) y = x; // y has type const int& and is bound to x
+decltype(cj) z; 	// error: z is a reference and must be initialized
+```
+
+若 `decltype` 使用的表达式不是变量，则会返回表达式结果对应的类型：
+
+```c++
+// decltype of an expression can be a reference type
+int i = 42, *p = &i, &r = i;
+decltype(r) a = i;	// ok, a has type int&
+decltype(r + 0) b; 	// ok: addition yields an int; b is an (uninitialized) int
+```
+
+如果表达式的内容是解引用操作，则 `decltype` 将得到引用类型：
+
+```c++
+int i = 42, &r = i, *p = &i;
+decltype(*p) t1 = i;	// ok, c has a type int&
+decltype(*r) t2 = i;	// error
+```
+
+如果给变量加上一层或多层括号，编译器则会把它当作表达式。*赋值如果作为表达式，则等于其左值的引用*。同时变量本身可以作为一个特殊表达式，这个表达式只有左值，且左值就是自己，故以这样的 `decltype` 就会得到引用类型：
+
+```c++
+// decltype of a parenthesized variable is always a reference
+decltype((i)) d; // error: d is int& and must be initialized
+decltype(i) e; // ok: e is an (uninitialized) int
+```
+
+## 2.6 Defining Our Own Data Structures (Types)
+
+In C++ we define our own data types by defining a class.
+
+### 2.6.1 Defining the `Sales_data` Type
+
+```c++
+struct Sales_data {
+    std::string bookNo;
+    unsigned units_sold = 0;
+    double revenue = 0.0;
+};
+```
+
+Our class begins with the keyword `struct`, followed by the name of the class 类名 and a (possibly empty) class body 类体. The class body is surrounded by curly braces and forms a new scope. The names defined inside the class must be unique within the class but can reuse names defined outside the class.
+
+The close curly that ends the class body must be followed by a semicolon. The semicolon is needed because we can define variables after the class body:
+
+```c++
+struct Sales_data { /* ... */ } accum, trans, *salesptr;
+// equivalent, but better way to define these objects
+struct Sales_data { /* ... */ };
+Sales_data accum, trans, *salesptr;
+```
+
+#### Class Data Members
+
+The class body defines the **members 成员** of the class. Each object has its own copy of the class data members. Modifying the data members of one object does not change the data in any other `Sales_data` object.  We define data members the same way that we define normal variables: We specify a base type followed by a list of one or more declarators.
+
+Under the new standard, we can supply an **in-class initializer 类内初始值** for a data member. When we create objects, the in-class initializers will be used to initialize the data members. Members without an initializer are default initialized.
+
+In § 7.2, we’ll see that C++ has a second keyword, `class`, that can be used to define our own data structures.
+
+### 2.6.2 Using the `Sales_data` Class
+
+Unlike the `Sales_item` class, our `Sales_data` class does not provide any operations, so we will have to write our own code to do the input, output, and addition operations.  
+
+#### Reading Data into a `Sales_data` Object
+
+```c++
+double price = 0;	// price per book, used to calculate total revenue
+// read the first transactions: ISBN, number of books sold, price per book
+std::cin >> data1.bookNo >> data1.units_sold >> price;
+// calculate total revenue from price and units_sold
+data1.revenue = data1.units_sold * price;
+
+// read second transaction
+std::cin >> data2.bookNo >> data2.units_sold >> price;
+data2.revenue = data2.units_sold * price;
+```
+
+#### Printing the Sum of Two `Sales_data` Objects
+
+Our other task is to check that the transactions are for the same ISBN. If so, we’ll print their sum, otherwise, we’ll print an error message:
+
+```c++
+if (data1.bookNo == data2.bookNo){
+    // sum to objects
+    // std::cout ...
+    return 0;	// indicate success
+} else {
+    // std::cerr ...
+    return 1;	// indicate failure
+}
+```
+
+### 2.6.3 Writing Our Own Header Files
+
+尽管如之后的 19.7 节所讲，我们可以在函数体内定义类，但是会受到一些限制。因此，类一般都不定义在函数体内。为保证不同文件使用同一个类的定义一致，类通常被定义在头文件（header file）中，且类所在头文件的名字应该与类名一致。
+
+头文件通常包含只能被定义一次的实体，如 `class`、`const` 和 `constexpr` 变量。由于头文件通常也需要其他头文件，则很可能出现多次包含（隐式）的情况，因此需要在书写头文件的时候进行适当处理，使遇到多次包含时也能安全和正常地工作。
+
+#### A Brief Introduction to the Preprocessor
+
+The most common technique for making it safe to include a header multiple times relies on the **preprocessor 预处理器**. The preprocessor—which C++ inherits from C—is a program that runs before the compiler and changes the source text of our programs. For example, when the preprocessor sees a `#include`, it *replaces* the `#include` with the contents of the specified header, i.e., copied into current program.
+
+C++ programs also use the preprocessor to define **header guards 头文件保护符**. Header guards rely on preprocessor variables. Preprocessor variables have one of two possible states: *defined* or *not defined*. The `#define` directive takes a name and defines that name as a preprocessor variable. There are two other directives that test whether a given preprocessor variable has or has not been defined: `#ifdef` is true if the variable has been defined, and `#ifndef` is true if the variable has not been defined. If the test is true, then everything following the `#ifdef` or `#ifndef` is processed up to the matching `#endif`.
+
+```c++
+#ifndef SALES_DATA_H
+#define SALES_DATA_H
+#include <string>
+struct Sales_data {
+    std::string bookNo;
+    unsigned units_sold = 0;
+    double revenue = 0.0;
+};
+#endif
+```
+
+WARNING: 预处理变量无视 C++ 语言中关于作用域的规则 (scoping rules)。预处理变量在整个程序中必须唯一，通常的做法时是基于头文件种类的名字来构筑保护符的名字，且要全部大写。
 
 ##  Exercises
 
@@ -803,6 +1231,145 @@ Pointer lp has a different type to variable i, so it's illegal to assign the add
 (b) int i, *ip = 0; // i is a variable type of int; ip is a null pointer.
 (c) int* ip, ip2; // ip is a uninitialized pointer; ip2 is a variable type of int.
 ```
+
+### Exercises Section 2.4
+
+2.26
+
+```c++
+(a) const int buf;	// illegal, uninitialized const variable
+(b) int cnt = 0;	// legal
+(c) const int sz = cnt;	// legal
+(d) ++cnt; ++sz;	// illegal, the of value of variable modified by const can not be changed
+```
+
+### Exercises Section 2.4.2
+
+2.27
+
+```c++
+(a) int i = -1, &r = 0; 		// ilegal, initializer of r must be an object
+(b) int *const p2 = &i2;		// legal
+(c) const int i = -1, &r = 0; 	// legal !!
+(d) const int *const p3 = &i2;	// legal
+(e) const int *p1 = &i2; 		// legal
+(f) const int &const r2;		// ilegal, reference must be initialized
+(g) const int i2 = i, &r = i;	// legal
+```
+
+2.28
+
+```c++
+(a) int i, *const cp; 		// ilegal, const variable cp must be initialized.
+(b) int *p1, *const p2;		// ilegal, const variable p2 must be initialized.
+(c) const int ic, &r = ic; 	// ilegal, const variable ic must be initialized.
+(d) const int *const p3;	// ilegal, const variable p3 must be initialized.
+(e) const int *p;			// legal
+```
+
+2.29
+
+```c++
+(a) i = ic; 	// legal
+(b) p1 = p3; 	// ilegal, const can't be convert to non const
+(c) p1 = &ic; 	// ilegal, type mismatched
+(d) p3 = &ic;	// legal
+(e) p2 = p1; 	// legal
+(f) ic = *p3;	// legal
+```
+
+### Exercises Section 2.4.4
+
+2.32
+
+```c++
+int null = 0, *p = null;	// ilegal
+
+constexpr int null = 0; int *p = null;	// legal
+```
+
+### Exercises Section 2.5.2
+
+2.33
+
+```c++
+a = 42; // legal
+b = 42; // legal
+c = 42;	// legal
+d = 42; // ilegal, d is int*
+e = 42; // ilegal, e is const int*
+g = 42;	// ilegal, g is a reference
+```
+
+2.34
+
+pass
+
+2.35
+
+```c++
+const int i = 42;
+auto j = i; 		// int
+const auto &k = i; 	// const int&
+auto *p = &i;		// const int*
+const auto j2 = i, &k2 = i;	// const int, const int&
+```
+
+### Exercises Section 2.5.3
+
+2.36
+
+```c++
+int a = 3, b = 4;
+decltype(a) c = a;		// int
+decltype((b)) d = a;	// int& bound to a
+++c;
+++d;	
+// a = 4, b = 4, c = 4, d = 4
+```
+
+2.37
+
+```c++
+int a = 3, b = 4;
+decltype(a) c = a;		// c is an int
+decltype(a = b) d = a;	// d is an int& bound to a
+```
+
+2.38
+
+```c++
+// auto will ignore the top-level const, while decltype remains it.
+
+// code that deduce the same type:
+int i = 1;
+auto i1 = i;		// i1 is an int
+decltype(i) i2 = i;	// i2 is an int 
+
+// code that deduce the different types:
+const int i = 1;
+auto i1 = i;		// i1 is an int
+decltype(i) i2 = i;	// i2 is a const int 
+```
+
+### Exercises Section 2.6.1
+
+2.39
+
+```powershell
+test.cpp(7): error C2628: 'Foo' followed by 'int' is illegal (did you forget a ';'?)
+test.cpp(8): error C3874: return type of 'main' should be 'int' instead of 'Foo'
+test.cpp(9): error C2440: 'return': cannot convert from 'int' to 'Foo'
+test.cpp(9): note: No constructor could take the source type, or constructor overload resolution was ambiguous
+```
+
+### Exercises Section 2.6.2
+
+2.41 PASS
+
+### Exercises Section 2.6.3
+
+2.42 PASS
 
 
 
