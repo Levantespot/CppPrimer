@@ -201,7 +201,7 @@ int units_sold{0};
 int units_sold(0);
 ```
 
-The compiler will reject us list initializing variables of built-in type if the initializer might lead to the **loss** of information when used with variables of built-in type: 
+The compiler will reject us list initializing variables of built-in type if the initializer might lead to the **loss** of information when used with variables of built-in type: 将初始值放在花括号内即为列表初始化。当用于内置类型的变量时，若初始值在类型转换中会丢失信息（精度），编译器则会报错。
 
 ```c++
 long double ld = 3.1415926536;
@@ -907,6 +907,17 @@ Sales_data accum, trans, *salesptr;
 The class body defines the **members 成员** of the class. Each object has its own copy of the class data members. Modifying the data members of one object does not change the data in any other `Sales_data` object.  We define data members the same way that we define normal variables: We specify a base type followed by a list of one or more declarators.
 
 Under the new standard, we can supply an **in-class initializer 类内初始值** for a data member. When we create objects, the in-class initializers will be used to initialize the data members. Members without an initializer are default initialized.
+
+Note: 类内初始值可以放在花括号里，可以放在等号右边，但是不能使用圆括号。
+
+```c++
+struct my_class_name {}
+    unsigned member1 = 0;	// ok
+	unsigned member2 = {0}; // ok
+    unsigned member3{0};	// ok
+    unsigned member4(0);	// error
+};
+```
 
 In § 7.2, we’ll see that C++ has a second keyword, `class`, that can be used to define our own data structures.
 

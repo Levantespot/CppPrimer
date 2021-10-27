@@ -33,3 +33,7 @@
 
 # Some example codes
 VisualStudio2012/*
+
+# Debug files
+*.pdb
+*.ilk
