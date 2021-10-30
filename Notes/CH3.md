@@ -585,6 +585,50 @@ hello,world!
 
 3.16
 
+```
+v1 size :0
+v2 size :10
+v3 size :10
+v4 size :1
+v5 size :2
+v6 size :10
+v7 size :10
+```
+
+3.17
+
+```
+Read a sequence of words from cin and store the values a vector. After you’ve read all the words, process the vector and change each word to uppercase. Print the transformed elements, eight words to a line.
+^Z
+READ    A       SEQUENCE        OF      WORDS   FROM    CIN     AND
+STORE   THE     VALUES  A       VECTOR. AFTER   YOU’VE READ
+ALL     THE     WORDS,  PROCESS THE     VECTOR  AND     CHANGE
+EACH    WORD    TO      UPPERCASE.      PRINT   THE     TRANSFORMED     ELEMENTS,
+```
+
+3.18
+
+```c++
+// Original code is ilegal.
+// Fixed one is below:
+vector<int> ivec;
+ivec.push_back(42);
+
+// Or we can do like:
+vector<int> ivec{0};
+ivec[0] = 42;
+```
+
+3.19
+
+```c++
+vector<int> v1(10, 42);	// way 1
+vector<int> v1{42, 42, 42, 42, 42, 42, 42, 42, 42, 42};	// way 2
+vector<int> v1 = {42, 42, 42, 42, 42, 42, 42, 42, 42, 42};	// way 3
+```
+
+3.20
+
 ```c++
 ```
 
