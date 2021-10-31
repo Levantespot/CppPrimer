@@ -458,11 +458,101 @@ Note:
    	ivec[ix] = ix; // disaster: ivec has no elements
    ```
 
-4. 
+   
+
 
 
 
 ## 3.4 Introducing Iterators
+
+所有的标准库容器都可以使用**迭代器 iterator** 来访问其中的元素，但是只有少数几种标准容器支持下标运算。
+
+类似于指针，迭代器提供了对对象的间接访问，能从一个位置移动到另一个位置，同时也有有效（指向某个元素或容器中尾元素的下一个位置）与无效（其他位置）之分。
+
+### 3.4.1. Using Iterators
+
+Types that have iterators have members that return iterators. In particular, these types have members named `begin` and `end`. 如果一个类型有迭代器，那么这个类型就会有「可以返回迭代器」的成员，比如 `begin` 和 `end`，其中 `begin` 返回指向第一个元素（或字符）的迭代器，`end` 指向尾元素的下一个位置，即一个不存在的位置，该迭代器通常被称为**尾后迭代器**或**尾迭代器**：
+
+```c++
+// the compiler determines the type of b and e;
+// b denotes the first element and e denotes one past the last element in v
+auto b = v.begin(), e = v.end(); // b and e have the same type
+```
+
+> Note：若容器为空，则 `begin` 和 `end` 返回都都是同一个尾后迭代器。
+
+#### Iterator Operations
+
+Table 3.6: Standard Container Iterator Operations
+
+| Code            | Notes                                                        |
+| --------------- | ------------------------------------------------------------ |
+| `*iter`         | Returns a **reference** to the element denoted by the iterator `iter`. |
+| `iter->mem`     | Dereferences `iter` and fetches the member named mem from the underlying element. Equivalent to (`*iter`).mem. |
+| `++iter`        | Increments `iter` to refer to the next element in the container. |
+| `--iter`        | Decrements `iter` to refer to the previous element in the container |
+| `iter1==iter2`  | Compares two iterators for equality. Two iterators are equal if they denote the same element or if they are the off-the-end iterator for the same container. |
+| `iter1!=iter2 ` | Compares two iterators for inequality.                       |
+
+```c++
+// Capitalize the first characte
+string s("some string");
+if (s.begin() != s.end()) { // make sure s is not empty
+	auto it = s.begin(); // it denotes the first character in s
+	*it = toupper(*it); // make that character uppercase
+}
+```
+
+#### Moving Iterators
+
+可以使用递增运算符 `++` 来将一个迭代器从一个元素移动到下一个元素：
+
+```c++
+// process characters in s until we run out of characters or we hit a whitespace
+for (auto it = s.begin(); it != s.end() && !isspace(*it); ++it)
+	*it = toupper(*it); // capitalize the current character
+```
+
+#### Iterator Types
+
+标准库中使用两种类型：`iterator` 和 `const_iterator`，区别为前者可读写，后者只能读：
+
+```c++
+vector<int>::iterator it; 			// it can read and write vector<int> elements
+string::iterator it2;				// it2 can read and write characters in a string
+vector<int>::const_iterator it3;	// it3 can read but not write elements
+string::const_iterator it4; 		// it4 can read but not write characters
+```
+
+通常来说，我们不需要关注迭代器的具体类型，使用 `auto` 即可。`begin` 和 `end` 返回的类型由对象是否是常量决定：
+
+```c++
+vector<int> v;
+const vector<int> cv;
+auto it1 = v.begin(); 	// it1 has type vector<int>::iterator
+auto it2 = cv.begin(); 	// it2 has type vector<int>::const_iterator
+```
+
+若想指定使用常量的迭代器类型，则可以使用 `cbegin` 和 `cend`：
+
+```c++
+auto it3 = cv.cbegin()
+```
+
+#### Combining Dereference and Member Access and `->` operation
+
+通过解引用操作符 `*` 可以获得迭代器所指的对象，若对象的类型是类，则访问其成员的方法如下：
+
+```c++
+(*it).member
+```
+
+其中括号不可省略，因为点运算的优先级高于解引用。为了简化，C++ 定义了箭头运算符 `->`，将解引用和成员访问结合在了一起：
+
+```c++
+```
+
+
 
 ## 3.5 Arrays
 
