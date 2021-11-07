@@ -8,7 +8,11 @@ using std::cout; using std::cin; using std::endl;
 using std::begin; using std::end;
 
 int main(){
-    int a[3][4] = {0};
-    
+    vector<string> text = {"Hello", ",", " ", "world", "!"};
+
+    for (auto s : text) {
+        cout << s ;
+    }
+    cout << endl;
     return 0;
 }

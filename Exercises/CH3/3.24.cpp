@@ -13,8 +13,8 @@ void f1 () {
         inputs.push_back(input);
     }
     int sum;
-    for (unsigned i = 0; i < inputs.size()-1; i++) {
-        cout << inputs[i] + inputs[i+1] << " " ;
+    for (auto i = inputs.begin(); i != inputs.end()-1; i++) {
+        cout << *i + *(i+1) << " " ;
     }
 }
 
@@ -25,13 +25,13 @@ void f2 () {
         inputs.push_back(input);
     }
     int sum;
-    for (unsigned i = 0; i < inputs.size() / 2; i++) {
-        cout << inputs[i] + inputs[inputs.size()-i-1] << " " ;
+    for (auto i = inputs.begin(); i != inputs.begin() + inputs.size() / 2; i++) {
+        cout << *i + *(i+inputs.size()-2*(i-inputs.begin())-1) << " " ;
     }
 }
 
 int main(){
-    // f1();
-    f2();
+    f1();
+    // f2();
     return 0;
 }

@@ -550,6 +550,7 @@ auto it3 = cv.cbegin()
 其中括号不可省略，因为点运算的优先级高于解引用。为了简化，C++ 定义了箭头运算符 `->`，将解引用和成员访问结合在了一起：
 
 ```c++
+(it->m)
 ```
 
 
@@ -719,8 +720,150 @@ vector<int> v1 = {42, 42, 42, 42, 42, 42, 42, 42, 42, 42};	// way 3
 
 3.20
 
-```c++
 ```
+// f1()
+1 2 3 4 5
+^Z
+3 5 7 9
+
+// f2()
+1 2 3 4 5 6
+^Z
+7 7 7
+```
+
+### Exercises Section 3.4.2
+
+3.24
+
+```
+// f1()
+1 2 3 4 5
+^Z
+3 5 7 9
+
+// f2()
+1 2 3 4 5 6
+^Z
+7 7 7
+```
+
+3.25
+
+```powershell
+-1 5 10 33 99 100
+^Z
+1 1 0 1 0 0 0 0 0 1 1
+```
+
+3.26
+
+```
+mid 和 beg 都是 iterator，不能直接相加。iterator 只能加数字。
+```
+
+### Exercises Section 3.5.1
+
+3.27
+
+```
+unsigned buf_size = 1024;
+(a) int ia[buf_size]; 		// ilegal, non-constexpr
+(b) int ia[4 * 7 - 14];		// legal
+(c) int ia[txt_size()]; 	// ilegal, non-constexpr
+(d) char st[11] = "fundamental";	// ilegal, out of space to store '\0'
+```
+
+3.28
+
+```c++
+string sa[10];		// 10 个 ""
+int ia[10];			// 10 个 0
+int main() {
+    string sa2[10];	// 10 个 ""
+    int ia2[10];	// undefined
+}
+```
+
+### Exercises Section 3.5.2
+
+3.30
+
+```
+下标应从 0 开始
+```
+
+3.31
+
+pass
+
+3.32
+
+pass
+
+3.33
+
+```
+会出现当用下标访问时，访问对象为 undefined 的情况。
+```
+
+### Exercises Section 3.5.3
+
+3.34
+
+```
+p1 指向 p2，任何情况都合法
+```
+
+3.35
+
+pass
+
+3.36
+
+pass
+
+### Exercises Section 3.5.4
+
+3.37
+
+```
+h
+e
+l
+l
+o
+```
+
+3.38
+
+指针可以理解为地址，两地址相加，得到的新的地址存储的东西很可能不是我们想要。
+
+3.39
+
+pass
+
+3.40
+
+pass
+
+### Exercises Section 3.5.5
+
+pass
+
+### Exercises Section 3.6.1
+
+3.43
+
+```
+因为括号的问题想了好久
+```
+
+3.44
+
+3.45
+
+
 
 
 
