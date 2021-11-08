@@ -8,8 +8,8 @@ using std::cout; using std::cin; using std::endl;
 using std::begin; using std::end;
 
 int main(){
-    cout << (sizeof(int*) == sizeof(int)) << endl;
-    cout << (sizeof(float*) == sizeof(float)) << endl;
-
+    int x[10]; int *p = x;
+    cout << sizeof(x)/sizeof(*x) << endl;
+    cout << sizeof(p)/sizeof(*p) << endl;
     return 0;
 }

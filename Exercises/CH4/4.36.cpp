@@ -8,8 +8,9 @@ using std::cout; using std::cin; using std::endl;
 using std::begin; using std::end;
 
 int main(){
-    cout << (sizeof(int*) == sizeof(int)) << endl;
-    cout << (sizeof(float*) == sizeof(float)) << endl;
-
+    int i = 2;
+    double d = 3.6;
+    i *= static_cast<int>(d);
+    cout << i << endl;
     return 0;
 }

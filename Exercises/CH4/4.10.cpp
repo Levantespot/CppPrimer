@@ -8,8 +8,8 @@ using std::cout; using std::cin; using std::endl;
 using std::begin; using std::end;
 
 int main(){
-    cout << (sizeof(int*) == sizeof(int)) << endl;
-    cout << (sizeof(float*) == sizeof(float)) << endl;
-
+    int input;
+    
+    while (cin >> input && input != 42) {}
     return 0;
 }
