@@ -78,3 +78,18 @@ while (val <= 10)
 ### Exercises Section 5.5.2
 
 5.21 pass
+
+### Exercises Section 5.5.3
+
+5.22 pass
+
+### Exercises Section 5.6.3
+
+5.23
+
+5.24
+
+即使已经 `throw` 了，也不会报错的样子。
+
+5.25 pass
+
