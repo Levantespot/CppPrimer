@@ -592,7 +592,7 @@ int &r2 = ci;		// error: nonconst reference to a const object
 
 #### Initialization and References to const
 
-Generally a reference must match the type of the object to which it refers. But we can initialize a **reference to const 常量引用** from any expression that can be converted (§ 2.1.2) to the type of the reference. In particular, we can bind a reference to `const` to a non`const` object, a **literal**, or a more general expression. 通常来说引用需要类型配对，但是在初始化常量引用时，可以使用任意可被转化为引用类型的表达式（对象、字面量等均可），即 `const type_A &var_A = var_B`，其中 `var_B` 的类型 `type_B` 可被转化为 `type_A` 即可，两者不一定相同。
+Generally a reference must match the type of the object to which it refers. But we can initialize a **reference to const 常量引用** from any expression that can be converted (§ 2.1.2) to the type of the reference. In particular, we can bind a reference to `const` to a non`const` object, a **literal**, or a more general expression. 通常来说引用需要类型配对，但是在初始化常量引用时，可以使用任意可被转化为引用类型的表达式（对象、字面量等均可），即 `const type_A &var_A = var_B`，其中 `var_B` 的类型 `type_B` 可被转化为 `type_A` 即可，两者不一定相同。
 
 ```c++
 // when type_A == type B
@@ -1116,9 +1116,16 @@ int main()
 2.11
 
 ```c++
-(a) extern int ix = 1024;	// definition
-(b) int iy;					// definition
-(c) extern int iz;			// declaration
+extern int ix = 1024;  // Definition
+int iy;  // Definition
+extern int iz;  // Declaration
+int main() {
+  //extern int ix2 = 1024;  // Error
+  int iy2;  // Definition
+  extern int iz2;  // Declaration
+
+  return 0;
+}
 ```
 
 ### Exercises Section 2.2.3
@@ -1259,7 +1266,7 @@ Pointer lp has a different type to variable i, so it's illegal to assign the add
 2.27
 
 ```c++
-(a) int i = -1, &r = 0; 		// ilegal, initializer of r must be an object
+(a) int i = -1, &r = 0; 		// ilegal, a nonconst reference cannot be initialized to a literal
 (b) int *const p2 = &i2;		// legal
 (c) const int i = -1, &r = 0; 	// legal !!
 (d) const int *const p3 = &i2;	// legal

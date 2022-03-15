@@ -389,16 +389,15 @@ vector<string> svec(10); 	// ten elements, each an empty string
 
    ```c++
    vector<int> v1(10);		// v1 has 10 elements with value zero
-   vector<int> v2(10, 1);	// v1 has 10 elements with value 1
+   vector<int> v2{10};      // v1 has 1 elements with value 1
    ```
 
 2. 若使用花括号，当提供的值可以用来列表初始化时，可以表述为列表初始化该 `vector`：
 
    ```c++
-   vector<int> v3{10};		// v3 has 3 elements with value 10
-   vector<int> v4{10, 1};	// v4 has 3 elements with value 10 and 1
+   vector<int> v3(10, 1);   // v3 has 10 elements with value 1
+   vector<int> v4{10, 1};   // v4 has 2 elements with value 10 and 1
    ```
-
    
 
 3. 若使用花括号，当提供的值不能用来列表初始化时，就考虑用该值来构造 `vector` 对象：
@@ -407,7 +406,7 @@ vector<string> svec(10); 	// ten elements, each an empty string
    vector<string> v5{"hi"}; 	// list initialization: v5 has 1 element
    vector<string> v6("hi"); 	// error: can’t construct a vector from a string literal
    vector<string> v7{10}; 		// v7 has 10 default-initialized elements
-   vector<string> v8{10, "hi"};// v8 has 10 elements with value "hi"
+   vector<string> v8{10, "hi"}; // v8 has 10 elements with value "hi"
    ```
 
 ### 3.3.2 Adding Elements to a `vector`
