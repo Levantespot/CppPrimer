@@ -2,7 +2,7 @@
 
 ## 3.1 Namespace `using` Declarations
 
-There is a simplified, also the safest way to using namespace members by **using declaration（`using` 声明）**. § 18.2.2 covers another way to use names from a namespace.  
+There is a simplified, also the safest way to using namespace members by **using declaration（`using` 声明）**. § 18.2.2 covers another way to use names from a namespace.
 
 A `using` declaration lets us use a name from a namespace without qualifying the name with a `namespace_name::` prefix. A `using` declaration has the form
 
@@ -65,14 +65,14 @@ A class may define many different ways to initialize objects of its type. Each w
 
 Table 3.1 Ways to Initialize a `string`
 
-| Code                  | Notes                                                        |
-| --------------------- | ------------------------------------------------------------ |
-| `string s1`           | Default initialization; `s1` is the empty string.            |
-| `string s2(s1)`       | `s2` is a copy of `s1`.                                      |
-| `string s2 = s1`      | Equivalent to `s2(s1)`, `s2` is a copy of `s1`.              |
-| `string s3("value")`  | `s3` is a copy of the string literal, not including the null. |
+| Code                    | Notes                                                                  |
+| ----------------------- | ---------------------------------------------------------------------- |
+| `string s1`           | Default initialization;`s1` is the empty string.                     |
+| `string s2(s1)`       | `s2` is a copy of `s1`.                                            |
+| `string s2 = s1`      | Equivalent to `s2(s1)`, `s2` is a copy of `s1`.                  |
+| `string s3("value")`  | `s3` is a copy of the string literal, not including the null.        |
 | `string s3 = "value"` | Equivalent to `s3("value")`, `s3` is a copy of the string literal. |
-| `string s4(n, ’c’)`   | Initialize `s4` with `n` copies of the character ’`c`’.      |
+| `string s4(n, ’c’)` | Initialize `s4` with `n` copies of the character ’`c`’.        |
 
 #### Direct and Copy Forms of Initialization
 
@@ -90,19 +90,19 @@ string s7(10, ’c’); // direct initialization; s7 is cccccccccc
 
 Table 3.2: `string` Operations
 
-| Code             | Notes                                                        |
-| ---------------- | ------------------------------------------------------------ |
-| `os << s`        | Writes  `s` onto output stream `os`. Returns `os`.           |
-| `is >> s`        | Reads whitespace-separated string  from `is` into `s`. Returns `is`. |
-| `getline(is, s)` | Reads a line of input from `is` into `s`. Returns `is`.      |
-| `s.empty()`      | Returns `true` if `s` is empty; otherwise returns `false`.   |
-| `s.size()`       | Returns the number of characters in `s`.                     |
+| Code               | Notes                                                                             |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `os << s`        | Writes `s` onto output stream `os`. Returns `os`.                           |
+| `is >> s`        | Reads whitespace-separated string  from `is` into `s`. Returns `is`.        |
+| `getline(is, s)` | Reads a line of input from `is` into `s`. Returns `is`.                     |
+| `s.empty()`      | Returns `true` if `s` is empty; otherwise returns `false`.                  |
+| `s.size()`       | Returns the number of characters in `s`.                                        |
 | `s[n]`           | Returns a reference to the char at position `n` in `s`; positions start at 0. |
-| `s1 + s2`        | Returns a string that is the concatenation of `s1` and `s2`. |
-| `s1 = s2`        | Replaces characters in `s1` with a copy of `s2`.             |
-| `s1 == s2`       | The strings `s1` and `s2` are equal if they contain the same characters. |
-| `s1 != s2`       | Equality is case-sensitive.                                  |
-| `<, <=, >, >=`   | Comparisons are case-sensitive and use dictionary ordering.  |
+| `s1 + s2`        | Returns a string that is the concatenation of `s1` and `s2`.                  |
+| `s1 = s2`        | Replaces characters in `s1` with a copy of `s2`.                              |
+| `s1 == s2`       | The strings `s1` and `s2` are equal if they contain the same characters.      |
+| `s1 != s2`       | Equality is case-sensitive.                                                       |
+| `<, <=, >, >=`   | Comparisons are case-sensitive and use dictionary ordering.                       |
 
 #### Reading an Unknown Number of `string`s
 
@@ -136,7 +136,7 @@ string line;
 while (getline(cin, line))
 	if (!line.empty())
 		cout << line << endl
-        
+      
 // read input a line at a time and print lines that are longer than 80 characters
 while (getline(cin, line))
 	if (line.size() > 80)
@@ -145,7 +145,7 @@ while (getline(cin, line))
 
 #### The `string::size_type` Type
 
-`size()` returns a `string::size_type` value. The type `size_type` is one of the companion types defined by `string`. Although we don’t know the precise type of `string::size_type`, we do know that it is an `unsigned` type big enough to hold the size of any `string`.  
+`size()` returns a `string::size_type` value. The type `size_type` is one of the companion types defined by `string`. Although we don’t know the precise type of `string::size_type`, we do know that it is an `unsigned` type big enough to hold the size of any `string`.
 
 Admittedly, it can be tedious to type `string::size_type`. Under the new standard, we can ask the compiler to provide the appropriate type by using `auto` or `decltype`:
 
@@ -217,28 +217,28 @@ string s7 = ("hello" + ", ") + s2; // error: can’t add string literals
 
 ### 3.2.3 Dealing with the Characters in a `string`
 
->ADVICE: USE THE C++ VERSIONS OF C LIBRARY HEADERS
->In addition to facilities defined specifically for C++, the C++ library incorporates the C library. Headers in C have names of the form `name.h`. The C++ versions of these headers are named `cname`—they remove the `.h` suffix and precede the name with the letter `c`. The `c` indicates that the header is part of the C library. 
->Hence, `cctype` has the same contents as `ctype.h`, but in a form that is appropriate for C++ programs. In particular, the names defined in the `cname` headers are defined inside the `std` namespace, whereas those defined in the `.h` versions are not.
->Ordinarily, C++ programs should use the `cname` versions of headers and not the `name.h` versions. That way names from the standard library are consistently found in the `std` namespace. Using the `.h` headers puts the burden on the programmer to remember which library names are inherited from C and which are unique to C++.
+> ADVICE: USE THE C++ VERSIONS OF C LIBRARY HEADERS
+> In addition to facilities defined specifically for C++, the C++ library incorporates the C library. Headers in C have names of the form `name.h`. The C++ versions of these headers are named `cname`—they remove the `.h` suffix and precede the name with the letter `c`. The `c` indicates that the header is part of the C library.
+> Hence, `cctype` has the same contents as `ctype.h`, but in a form that is appropriate for C++ programs. In particular, the names defined in the `cname` headers are defined inside the `std` namespace, whereas those defined in the `.h` versions are not.
+> Ordinarily, C++ programs should use the `cname` versions of headers and not the `name.h` versions. That way names from the standard library are consistently found in the `std` namespace. Using the `.h` headers puts the burden on the programmer to remember which library names are inherited from C and which are unique to C++.
 
 Table 3.3: `cctype` Functions
 
-| Code          | Notes                                                        |
-| ------------- | ------------------------------------------------------------ |
-| `isalnum(c)`  | true if `c` is a letter or a digit.                          |
-| `isalpha(c)`  | true if `c` is a letter.                                     |
-| `iscntrl(c)`  | true if `c` is a control character.                          |
-| `isdigit(c)`  | true if `c` is a digit.                                      |
-| `isgraph(c)`  | true if `c` is not a space but is printable.                 |
-| `islower(c)`  | true if `c` is a lowercase letter.                           |
-| `isprint(c)`  | true if `c` is a printable character (i.e., a space or a character that has a visible  representation) |
+| Code            | Notes                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isalnum(c)`  | true if `c` is a letter or a digit.                                                                                                       |
+| `isalpha(c)`  | true if `c` is a letter.                                                                                                                  |
+| `iscntrl(c)`  | true if `c` is a control character.                                                                                                       |
+| `isdigit(c)`  | true if `c` is a digit.                                                                                                                   |
+| `isgraph(c)`  | true if `c` is not a space but is printable.                                                                                              |
+| `islower(c)`  | true if `c` is a lowercase letter.                                                                                                        |
+| `isprint(c)`  | true if `c` is a printable character (i.e., a space or a character that has a visible  representation)                                    |
 | `ispunct(c)`  | true if `c` is a punctuation character (i.e., a character that is not a control character, a digit, a letter, or a printable whitespace). |
-| `isspace(c)`  | true if `c` is whitespace (i.e., a space, tab, vertical tab, return, newline, or formfeed). |
-| `isupper(c)`  | true if `c` is an uppercase letter.                          |
-| `isxdigit(c)` | true if `c` is a hexadecimal digit.                          |
-| `tolower(c)`  | If `c` is an uppercase letter, returns its lowercase equivalent; otherwise returns `c` unchanged. |
-| `toupper(c)`  | If `c` is a lowercase letter, returns its uppercase equivalent; otherwise  returns `c` unchanged. |
+| `isspace(c)`  | true if `c` is whitespace (i.e., a space, tab, vertical tab, return, newline, or formfeed).                                               |
+| `isupper(c)`  | true if `c` is an uppercase letter.                                                                                                       |
+| `isxdigit(c)` | true if `c` is a hexadecimal digit.                                                                                                       |
+| `tolower(c)`  | If `c` is an uppercase letter, returns its lowercase equivalent; otherwise returns `c` unchanged.                                       |
+| `toupper(c)`  | If `c` is a lowercase letter, returns its uppercase equivalent; otherwise  returns `c` unchanged.                                       |
 
 #### Use Range-Based `for`
 
@@ -270,7 +270,7 @@ cout << s << endl;	// The output will be "HELLO WORLD!!!"
 
 #### Processing Only Some Characters
 
-There are two ways to access individual characters in a `string`: We can use a **subscript 下标** or an **iterator 迭代器**. 
+There are two ways to access individual characters in a `string`: We can use a **subscript 下标** or an **iterator 迭代器**.
 
 The subscript operator (the `[]` operator) takes a `string::size_type` value that denotes the position of the character we want to access. The operator returns a **reference** to the character at the given position. (Subscripts for `string`s start at zero;)
 
@@ -303,10 +303,10 @@ C++语言既有类模板 (class template)，也有函数模板 (function templat
 对于类模板，需要提供额外信息来指定模板实例化成什么样的类，而需要提供的额外信息由模板决定。提供的方式为：在模板名字后面跟一对尖括号，在括号内放入信息，如下所示。
 
 ```c++
-class_template_name<additional_information> class_name
+class_template_name<additional_information> class_name
 ```
 
-`vector` 能容纳绝大多数类型的对象 (In particular, we can have `vectors` whose elements are themselves `vectors`.) 作为其元素，但是因为引用不是对象，所以不存在包含引用的`vector`。
+`vector` 能容纳绝大多数类型的对象 (In particular, we can have `vectors` whose elements are themselves `vectors`.) 作为其元素，但是因为引用不是对象，所以不存在包含引用的 `vector`。
 
 > Note：在早期版本的 C++ 标准中如果 `vector` 的元素还是 `vector` (或者其他模板类型)，则其定义的形式与现在的 C++11 标准略有不同。过去必须在外层 `vector` 对象的右尖括号和其元素类型之间添加一个空格，如应该写成 `vector<vector<int> >` 而非 `vector<vector<int>>`。
 
@@ -314,15 +314,15 @@ class_template_name<additional_information> class_name
 
 Table 3.4: Ways to Initialize a `vector`
 
-| Code                         | Notes                                                        |
-| ---------------------------- | ------------------------------------------------------------ |
-| `vector<T> v1`               | `vector` that holds objects of type `T`. Default  initialization; `v1` is empty. |
-| `vector<T> v2(v1)`           | `v2` has a copy of each element in `v1`.                     |
-| `vector<T> v2 = v1`          | Equivalent to `v2(v1)`, `v2` is a copy of the elements in `v1`. |
-| `vector<T> v3(n, val)`       | `v3` has `n` elements with value `val`.                      |
-| `vector<T> v4(n)`            | `v4` has `n` copies of a value-initialized object.           |
+| Code                           | Notes                                                                                                           |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `vector<T> v1`               | `vector` that holds objects of type `T`. Default  initialization; `v1` is empty.                          |
+| `vector<T> v2(v1)`           | `v2` has a copy of each element in `v1`.                                                                    |
+| `vector<T> v2 = v1`          | Equivalent to `v2(v1)`, `v2` is a copy of the elements in `v1`.                                           |
+| `vector<T> v3(n, val)`       | `v3` has `n` elements with value `val`.                                                                   |
+| `vector<T> v4(n)`            | `v4` has `n` copies of a value-initialized object.                                                          |
 | `vector<T> v5{a,b,c ...}`    | `v5` has as many elements as there are initializers; elements are  initialized by corresponding initializers. |
-| `vector<T> v5 = {a,b,c ...}` | Equivalent to `v5{a,b,c ...}`                                |
+| `vector<T> v5 = {a,b,c ...}` | Equivalent to `v5{a,b,c ...}`                                                                                 |
 
 When we copy a `vector`, each element in the new `vector` is a copy of the corresponding element in the original `vector`. The two `vectors` must be the same type:
 
@@ -391,15 +391,12 @@ vector<string> svec(10); 	// ten elements, each an empty string
    vector<int> v1(10);		// v1 has 10 elements with value zero
    vector<int> v2{10};      // v1 has 1 elements with value 1
    ```
-
 2. 若使用花括号，当提供的值可以用来列表初始化时，可以表述为列表初始化该 `vector`：
 
    ```c++
    vector<int> v3(10, 1);   // v3 has 10 elements with value 1
    vector<int> v4{10, 1};   // v4 has 2 elements with value 10 and 1
    ```
-   
-
 3. 若使用花括号，当提供的值不能用来列表初始化时，就考虑用该值来构造 `vector` 对象：
 
    ```c++
@@ -426,17 +423,17 @@ for (int i = 0; i != 100; ++i)
 
 Table 3.5: `vector` Operations
 
-| Code                  | Notes                                                        |
-| --------------------- | ------------------------------------------------------------ |
-| `v.empty()`           | Returns `true` if `v` is empty; otherwise returns `false`.   |
-| `v.size()`            | Returns the number of elements in `v`.                       |
-| `v.push_back(t)`      | Adds an element with value `t` to end of `v`.                |
-| `v[n]`                | Returns a reference to the element at position `n` in `v`.   |
-| `v1 = v2`             | Replaces the elements in `v1` with a copy of the elements in `v2`. |
-| `v1 = {a,b,c . . . }` | Replaces the elements in `v1` with a copy of the elements in the  comma-separated list. |
+| Code                    | Notes                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `v.empty()`           | Returns `true` if `v` is empty; otherwise returns `false`.                                                                                 |
+| `v.size()`            | Returns the number of elements in `v`.                                                                                                         |
+| `v.push_back(t)`      | Adds an element with value `t` to end of `v`.                                                                                                |
+| `v[n]`                | Returns a reference to the element at position `n` in `v`.                                                                                   |
+| `v1 = v2`             | Replaces the elements in `v1` with a copy of the elements in `v2`.                                                                           |
+| `v1 = {a,b,c . . . }` | Replaces the elements in `v1` with a copy of the elements in the  comma-separated list.                                                        |
 | `v1 == v2`            | `v1` and `v2` are equal if they have the same number of elements and each element in `v1` is equal to the corresponding element in `v2`. |
-| `v1 != v2`            | See below.                                                   |
-| `<, <=, >, >=`        | Have their normal meanings using dictionary ordering.        |
+| `v1 != v2`            | See below.                                                                                                                                       |
+| `<, <=, >, >=`        | Have their normal meanings using dictionary ordering.                                                                                            |
 
 Note:
 
@@ -446,9 +443,7 @@ Note:
    vector<int>::size_type 	// ok
    vector::size_type 		// error
    ```
-
 2. 只有当元素的值可以比较时，`vector` 对象才能被比较。如 `vector<string>` 可以被比较；`vector<Sales_item>` 不能被比较，因为没有定义比较的运算。
-
 3. 不能用下标的形式向 `vector` 对象（以及 `string` 对象）添加元素：
 
    ```c++
@@ -456,11 +451,6 @@ Note:
    for (decltype(ivec.size()) ix = 0; ix != 10; ++ix)
    	ivec[ix] = ix; // disaster: ivec has no elements
    ```
-
-   
-
-
-
 
 ## 3.4 Introducing Iterators
 
@@ -484,14 +474,14 @@ auto b = v.begin(), e = v.end(); // b and e have the same type
 
 Table 3.6: Standard Container Iterator Operations
 
-| Code            | Notes                                                        |
-| --------------- | ------------------------------------------------------------ |
-| `*iter`         | Returns a **reference** to the element denoted by the iterator `iter`. |
-| `iter->mem`     | Dereferences `iter` and fetches the member named mem from the underlying element. Equivalent to (`*iter`).mem. |
-| `++iter`        | Increments `iter` to refer to the next element in the container. |
-| `--iter`        | Decrements `iter` to refer to the previous element in the container |
+| Code              | Notes                                                                                                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `*iter`         | Returns a**reference** to the element denoted by the iterator `iter`.                                                                                |
+| `iter->mem`     | Dereferences `iter` and fetches the member named mem from the underlying element. Equivalent to (`*iter`).mem.                                           |
+| `++iter`        | Increments `iter` to refer to the next element in the container.                                                                                           |
+| `--iter`        | Decrements `iter` to refer to the previous element in the container                                                                                        |
 | `iter1==iter2`  | Compares two iterators for equality. Two iterators are equal if they denote the same element or if they are the off-the-end iterator for the same container. |
-| `iter1!=iter2 ` | Compares two iterators for inequality.                       |
+| `iter1!=iter2 ` | Compares two iterators for inequality.                                                                                                                       |
 
 ```c++
 // Capitalize the first characte
@@ -552,13 +542,11 @@ auto it3 = cv.cbegin()
 (it->m)
 ```
 
-
-
 ## 3.5 Arrays
 
 ## 3.6 Multidimensional Arrays
 
-##  Exercises
+## Exercises
 
 ### Exercises Section 3.1
 
@@ -676,13 +664,20 @@ hello,world!
 3.16
 
 ```
-v1 size :0
-v2 size :10
-v3 size :10
-v4 size :1
-v5 size :2
-v6 size :10
-v7 size :10
+v1 :
+v1 size = 0
+v2 : 0 0 0 0 0 0 0 0 0 0
+v2 size = 10
+v3 : 42 42 42 42 42 42 42 42 42 42
+v3 size = 10
+v4 : 10
+v4 size = 1
+v5 : 10 42
+v5 size = 2
+v6 :
+v6 size = 10
+v7 : hi hi hi hi hi hi hi hi hi hi
+v7 size = 10
 ```
 
 3.17
@@ -731,17 +726,36 @@ vector<int> v1 = {42, 42, 42, 42, 42, 42, 42, 42, 42, 42};	// way 3
 7 7 7
 ```
 
+3.21
+
+pass
+
+3.22
+
+```powershell
+hello darkness
+my old friend.
+^Z
+
+HELLO DARKNESS
+my old friend.
+```
+
+3.23
+
+pass
+
 ### Exercises Section 3.4.2
 
 3.24
 
 ```
-// f1()
+# f1()
 1 2 3 4 5
 ^Z
 3 5 7 9
 
-// f2()
+# f2()
 1 2 3 4 5 6
 ^Z
 7 7 7
@@ -861,10 +875,6 @@ pass
 3.44
 
 3.45
-
-
-
-
 
 ### Exercises Section x.y.z
 

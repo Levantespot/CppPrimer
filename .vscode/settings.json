@@ -70,7 +70,9 @@
         "compare": "cpp",
         "concepts": "cpp"
     },
-    "workbench.editorAssociations": {
-        "*.md": "default"
-    },
+    {
+        "workbench.editorAssociations": {
+            "*.md": "default"
+    }
+}
 }

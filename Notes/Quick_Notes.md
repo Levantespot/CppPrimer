@@ -144,3 +144,77 @@ vector<string> svec(10, "hi!"); // ten strings; each element is "hi!"
    vector<string> v6("hi"); 	// error: can’t construct a vector from a string literal
    vector<string> v7{10}; 		// v7 has 10 default-initialized elements
    vector<string> v8{10, "hi"}; // v8 has 10 elements with value "hi"
+
+
+
+### P202 函数不能返回局部对象的引用或指针
+
+函数返回：
+
+- 局部对象、值：OK，因为是通过临时复制对象来传值、对象。
+- 局部对象的引用、指针：ERROR，因为引用、指针所指的对象在函数结束后就被释放，因此会指向不可用的内存空间。
+
+### P213 函数默认实参
+
+用作默认实参的名字在函数声明所在的作用域内解析，而这些名字的求值过程发生在函数调用时。
+
+
+
+### P223 返回指向函数的指针、函数指针形参
+
+```c++
+using PF = double(*)(const double);
+
+double scale1(const double a) {
+    return a * 3 + 10;
+}
+double scale2(const double b) {
+    return b * 5 + 2;
+}
+
+// version 1
+double (*choose_bigger(double a, double pf1(const double), double pf2(const double)))(const double){
+    double out1 = pf1(a);
+    double out2 = pf2(a);
+    if (out1 >= out2) {
+        return pf1;
+    } else {
+        return pf2;
+    }
+}
+
+// version 2
+PF choose_bigger(double a, double pf1(const double), double pf2(const double)){
+    double out1 = pf1(a);
+    double out2 = pf2(a);
+    if (out1 >= out2) {
+        return pf1;
+    } else {
+        return pf2;
+    }
+}
+
+// version 3
+auto choose_bigger(double a, double pf1(const double), double pf2(const double)) -> double (*)(const double)
+{
+    double out1 = pf1(a);
+    double out2 = pf2(a);
+    if (out1 >= out2) {
+        return pf1;
+    } else {
+        return pf2;
+    }
+}
+
+int main(int argc, char *argv[]){
+    double input;
+    while (cin >> input) {
+        cout << "Input : " << input << ", scale1 = " << 
+            scale1(input) << ", scale2 = " << scale2(input) << endl;
+        cout << "Choose " << choose_bigger(input, scale1, scale2)(input) << endl;
+    }
+
+    return 0;
+}
+```
+
