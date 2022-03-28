@@ -1,8 +1,10 @@
 # C++ Primer, 5th Edition
+
 My notes and solutions to the "C++ Primer 5th Edition"
 
 ### Index
 
+- [Quick notes](./Notes/Quick_Notes.md)
 - [Getting Started](./Notes/CH1.md)
 - Part I - The Basics
   - [Variables and Basic Types](./Notes/CH2.md)

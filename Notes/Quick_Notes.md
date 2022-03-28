@@ -218,3 +218,19 @@ int main(int argc, char *argv[]){
 }
 ```
 
+
+
+### P261 函数的构造函数只能有一个是使用默认实参的
+
+```c++
+class C {
+public:
+    C(int a = 0): val(a) {}
+    C(string s): str(s) {}		// ok
+    C(string s = ""): str(s) {}	// error, ambiguous call to overloaded function
+private:
+    int val;
+    std::string str;
+};
+```
+

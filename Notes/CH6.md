@@ -211,3 +211,25 @@ pass
 pass
 
 6.52, 6.53 pass
+
+6.54
+
+see code
+
+6.55, 6.66
+
+```
+1 2
+The results of four functions:
+3
+-1
+2
+0
+4 2
+The results of four functions:
+6
+2
+8
+2
+```
+
