@@ -14,7 +14,9 @@ My notes and solutions to the "C++ Primer 5th Edition"
   - [Functions](./Notes/CH6.md)
   - [Classes](./Notes/CH7.md)
 - Part II - The C++ Library
-  - [Chapter title](./Notes/CHX.md)
+  - [The IO Library](./Notes/CH8.md)
+  - [Sequential Containers](./Notes/CH9.md)
+  - [Generic Algorithms](./Notes/CH10.md)
 - Part III - Tools for Class Authors
   - [Chapter title](./Notes/CHX.md)
 - Part IV - Advanced Topics
